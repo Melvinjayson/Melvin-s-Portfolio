@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.vercel/
+.DS_Store
+# Private career and evidence material must never be committed to this public repo
+private/
+docs/private/
