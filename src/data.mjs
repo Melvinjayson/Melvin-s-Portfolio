@@ -42,6 +42,14 @@ export const EVIDENCE = {
 export const FLAGSHIPS = [
   {
     slug: 'x-hunt',
+    tone: ['#dcefe2', '#0b1d14'],
+    art: 'product',
+    insight: 'People did not want to be chased, and they did not want their details passed around.',
+    validation: [
+      'I direct the build with AI coding agents; most commits in the repository are co-authored with them. The guard-rails are written down as decision records — authentication, tenant isolation, one AI gateway with rules first, design tokens and motion.',
+      'On 23 October 2026 the end-to-end acceptance suite passed 33 of 33 checks against a production build, on three consecutive runs, with the AI provider switched off. Catch-up summaries, wording suggestions and plain-language search all have rule-based paths.',
+      'Hard-coded colour values were replaced with a token system whose contrast rules are recorded as a decision.'
+    ],
     status: 'Live pilot · 2026 · Co-founder',
     thumb: { src: '/img/x-hunt/brief', w: 1152, h: 662, alt: '' },
     gallery: [
@@ -80,12 +88,10 @@ export const FLAGSHIPS = [
         'A person with no affiliation should be able to start from what they want to contribute to. The product therefore has two entry points — individual-led and community-led — and the individual path starts with a single sentence rather than a CV or a membership.',
         'From there, every design choice protects agency: nothing is shared until the person chooses, introductions need two yeses, and the AI assistant has hard limits on what it may do.'
       ]],
-      ['Building it', 'Design decisions that have to survive production.', [
-        'I lead the product build as well as its design, working with AI coding agents under my direction; most commits in the repository are co-authored with them. That makes the guard-rails the real design work: decision records for authentication, tenant isolation, the AI gateway, design tokens and motion, and an acceptance suite that has to pass before anything ships.',
-        'Taking an early codebase towards production meant consolidating surfaces, hardening authentication and replacing hard-coded colour values with a design-token system whose contrast rules are written down as a decision record.',
-        'The acceptance suite is the clearest evidence of the AI boundary. On 23 October 2026 it passed 33 of 33 checks against a production build — with the AI provider switched off. Catch-up summaries, wording suggestions and plain-language search all have rule-based paths, so the product still works when there is no model.',
-        'Research is written to be argued with. The landing-page study states its hypotheses, grades each source, lists counterevidence (incumbents exist; stated willingness is not behaviour) and ends with a rule: the page may not promise a feature the product does not have.',
-        'The pilot is deliberately small. The next stage is measuring whether the trust model works: whether people complete the first sentence, open sharing to their communities, and say yes to a first opportunity.'
+      ['Making it real', 'The boundaries people feel are the ones that ship.', [
+        'Research is written to be argued with. The landing-page study states its hypotheses, weighs each source and names the counterevidence — incumbents exist, and stated willingness is not behaviour. It ends with a rule: the page may not promise anything the product does not do.',
+        'Because I design and build the interface, the limits I draw on paper survive into production. A suggestion is always a labelled draft with Accept and Dismiss. A search shows how it read your words, and lets you remove that reading. A moderator view says that every look is recorded.',
+        'The pilot is deliberately small. The next question is behavioural: do people finish the first sentence, open sharing to their communities, and say yes to a first opportunity?'
       ]]
     ],
     ownership: {
@@ -131,6 +137,9 @@ export const FLAGSHIPS = [
   },
   {
     slug: 'fidelity-bank',
+    tone: ['#e1e5f1', '#0d1322'],
+    art: 'blueprint',
+    insight: 'Trust became a practical requirement rather than a brand value.',
     status: 'Delivered · 2021–22 · Design lead',
     org: 'Fidelity Bank',
     title: 'A better banking app needed a better bridge behind it',
@@ -195,6 +204,9 @@ export const FLAGSHIPS = [
   },
   {
     slug: 'viiv-healthcare',
+    tone: ['#f1e5db', '#1f140e'],
+    art: 'flow',
+    insight: 'Help with volume and format — without the output being mistaken for expert judgement.',
     status: 'Concept · Accenture Song',
     org: 'ViiV Healthcare',
     title: 'Getting expert knowledge to the frontline without losing its meaning',
@@ -252,6 +264,9 @@ export const FLAGSHIPS = [
   },
   {
     slug: 'youtube-ml',
+    tone: ['#e8e3f1', '#15112a'],
+    art: 'reframe',
+    insight: 'An ML ecosystem that teams could build on, rather than work around.',
     status: 'Research · Accenture Song',
     org: 'YouTube',
     title: 'The brief was analytics. The problem was how teams worked.',

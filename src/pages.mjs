@@ -1,77 +1,88 @@
 import { readFileSync } from 'node:fs';
 // Secondary pages. Helpers are injected by scripts/build.mjs to avoid a circular import.
 export function pages(h) {
-  const { page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, FLAGSHIPS } = h;
+  const { page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, FLAGSHIPS, DEX, dexCover } = h;
   const out = [];
   const add = (path, opts) => out.push({ path, html: page({ path, ...opts }) });
 
   // ---------------- About ----------------
   add('/about/', {
     title: 'About',
-    description: 'About Melvin Jayson Ogbalu — product designer at Accenture Song, Dublin, with a background in Computer Science and financial services.',
+    description: 'About Melvin Jayson Ogbalu — a Dublin-based product designer whose path runs from customer-facing banking in Nigeria to consulting, research, mentoring and building products of his own.',
     body: `
-<section class="hero wrap">
-  <div class="grid">
-    <div class="span-7">
-      <p class="eyebrow">About</p>
-      <h1>Curious by nature. <span class="serif">Intentional</span> by design.</h1>
-      <p class="lead">I’m a product designer in Dublin. Curiosity has carried me from customer-facing banking in Nigeria to leading a bank’s design and engineering team, consulting on machine-learning operations and healthcare, and building a product of my own.</p>
-      <div class="btn-row"><a class="btn" href="/resume/">Résumé ${ARROW}</a><a class="btn btn--ghost" href="${SITE.linkedin}" rel="noopener">LinkedIn ${EXT}</a></div>
-    </div>
-    <figure class="span-4 start-9" style="margin:0">
-      <img class="portrait" src="${SITE.portrait}" alt="Portrait of Melvin Jayson Ogbalu" width="640" height="800" fetchpriority="high" decoding="async">
-    </figure>
+<section class="about-hero wrap">
+  <figure class="about-portrait"><img class="portrait" src="${SITE.portrait}" alt="Portrait of Melvin Jayson Ogbalu" width="640" height="800" fetchpriority="high" decoding="async"></figure>
+  <div class="about-intro">
+    <p class="kicker">About</p>
+    <h1 class="display">Curious by nature. <span class="serif">Intentional</span> by design.</h1>
+    <p class="lead">I’m Melvin — a product designer in Dublin. I grew up professionally on the customer side of banking in Nigeria, where I learned how a service really feels to the person on the other side of the counter. That view has stayed with me through every role since.</p>
   </div>
 </section>
 
-<div class="wrap">
-  <section class="chapter"><header><p class="eyebrow">How I got here</p><h2>I didn’t begin by designing interfaces.</h2></header><div class="body">
-    <p>I began by listening to people trying to get things done — often in systems that made simple tasks unnecessarily difficult. Working directly with banking customers showed me the gap between how an organisation imagines a service works and how it feels to the person using it.</p>
-    <p>At Rivet Software and Inlaks I designed payment workflows and a learning platform, and learned how design decisions survive — or fail to survive — implementation. At Fidelity Bank I led the design and engineering team redesigning retail and corporate banking, and came to treat trust as a practical requirement: people need to know where their money is, what will happen when they confirm, and how to recover when something goes wrong.</p>
-    <p>At Accenture Song my work often starts while the brief is still ambiguous — machine-learning operations, healthcare, public services, energy and financial products. One lesson keeps returning: <strong>a polished interface cannot rescue a poorly understood problem.</strong></p>
-  </div></section>
+<section class="path wrap" aria-labelledby="path-title">
+  <h2 id="path-title" class="section-title">A path, not a plan</h2>
+  <ol class="path-list">
+    <li><span class="when">Early career</span><div><h3>Listening at the counter</h3><p>Customer-facing roles at GTBank and elsewhere showed me the gap between how an organisation imagines a service and how it feels to use. I still start there.</p></div></li>
+    <li><span class="when">2018 — 2021</span><div><h3>Learning what survives implementation</h3><p>At Rivet Software and Inlaks I designed payment workflows and a learning platform, and saw how design decisions live or die once engineering begins.</p></div></li>
+    <li><span class="when">2021 — 2022</span><div><h3>Leading design at a bank</h3><p>At Fidelity Bank I led the design and engineering team redesigning retail and corporate banking. Trust stopped being an abstraction: people need to know where their money is, what happens when they confirm, and how to recover.</p></div></li>
+    <li><span class="when">2022 — now</span><div><h3>Consulting where the brief is still unclear</h3><p>At Accenture Song I work across machine-learning operations, healthcare, public services, energy and finance. The lesson that keeps returning: <em>a polished interface cannot rescue a poorly understood problem.</em></p></div></li>
+    <li><span class="when">Alongside</span><div><h3>Building my own</h3><p>I co-founded X-hunt and lead the Reveta ecosystem, including Aura. There is no client to hide behind — every decision is mine to defend.</p></div></li>
+  </ol>
+</section>
 
-  <section class="chapter"><header><p class="eyebrow">Computer Science + design</p><h2>Design decisions should survive implementation.</h2></header><div class="body">
-    <p>My Computer Science background changes the questions I ask while designing. What data does this interface depend on? Where does state change? What happens when an action fails? Who needs to verify an automated decision?</p>
-    <p>It does not replace user research. It helps me connect the problems people describe to the workflows, systems and engineering constraints behind them — and to prototype in code when a static mock-up cannot answer the question.</p>
-    <p><a class="arrow-link" href="/lab/">See the Lab ${ARROW}</a></p>
-  </div></section>
+<section class="beliefs wrap" aria-labelledby="beliefs-title">
+  <h2 id="beliefs-title" class="section-title">What I believe about the work</h2>
+  <div class="beliefs-grid">
+    <div><p class="serif big-quote">Research before assumptions.</p><p>Interviews, synthesis and systems mapping make hidden needs and trade-offs visible before anyone draws a screen.</p></div>
+    <div><p class="serif big-quote">Technology with intention.</p><p>AI, spatial interfaces and prototyping matter when they solve a real problem and leave people in charge — not as ends in themselves.</p></div>
+    <div><p class="serif big-quote">Say what is unproven.</p><p>I would rather show an honest experiment than make a demo sound more capable than it is.</p></div>
+  </div>
+  <p class="engineering-note">I studied Computer Science. It changes the questions I ask while designing — what data a screen depends on, where state changes, what happens when an action fails — and it lets me prototype in code when a static picture can’t answer the question. <a href="/lab/">See the Lab</a>.</p>
+</section>
 
-  <section class="chapter"><header><p class="eyebrow">What shapes my practice</p><h2>Three commitments.</h2></header><div class="body">
-    <p><strong>Research before assumptions.</strong> Interviews, synthesis, systems mapping and testing make hidden needs and trade-offs visible.</p>
-    <p><strong>Technology with intention.</strong> AI, spatial interfaces and prototyping matter when they solve a real problem and support human agency — not as ends in themselves.</p>
-    <p><strong>Honesty about evidence.</strong> I would rather show an imperfect experiment and explain exactly what it does than make a demo sound more capable than it is. It is why every outcome on this site is labelled.</p>
-  </div></section>
+<section class="giving wrap" id="mentoring" aria-labelledby="giving-title">
+  <h2 id="giving-title" class="section-title">Giving back</h2>
+  <div class="giving-grid">
+    <div><span class="big">200+</span><h3>Mentees on ADPList</h3><p>Top 1% global UX mentor, with a 4.7/5 rating (as recorded in my 2026 CV). Portfolio reviews, career questions and the messy middle of design work — helping people build their own judgement.</p></div>
+    <div><span class="big serif">2025</span><h3>Foróige student mentor</h3><p>Volunteering from January to April, supporting young people to build confidence and a sense of possibility long before anyone has a job title.</p></div>
+    <div><span class="big serif">2024</span><h3><em>Designing Life’s Tapestry</em></h3><p>A book about faith, connection and wellness — the invisible heroes of everyday life. I also write essays on systems, design and intelligent technology. <a href="/writing/">Writing</a>.</p></div>
+  </div>
+</section>
 
-  <section class="chapter"><header><p class="eyebrow">Mentorship and community</p><h2>What I know matters more when I share it.</h2></header><div class="body">
-    <p><strong>ADPList — Top 1% Global UX Mentor.</strong> 200+ mentees, 4.7/5 rating, as recorded in my 2026 CV. I mentor through portfolio reviews, career questions and the messy middle of design work, helping people build their own judgement rather than follow a template.</p>
-    <p><strong>Foróige — volunteer student mentor</strong>, January to April 2025: supporting young people to build confidence and a sense of possibility, well before anyone has a professional title.</p>
-    <p><a class="arrow-link" href="/impact/">Research and community work ${ARROW}</a></p>
-  </div></section>
-
-  <section class="chapter"><header><p class="eyebrow">Study</p><h2>Breadth that informs the work.</h2></header><div class="body">
-    <p>Computer Science; postgraduate study in Design Thinking for Sustainability at University College Dublin, including the Soiléir impact-rating research; and Economics and Public Policy at the University of Limerick. Alongside: UX research, cognitive psychology and cloud technology education.</p>
-    <p>I also write — about systems thinking, design, faith and intelligent technology — and published <em>Designing Life’s Tapestry</em> in 2024.</p>
-    <p><a class="arrow-link" href="/writing/">Writing ${ARROW}</a></p>
-  </div></section>
-</div>`
+<section class="study wrap" aria-labelledby="study-title">
+  <h2 id="study-title" class="section-title">Study</h2>
+  <p class="lead">Computer Science. An MSc in Design Thinking for Sustainability at University College Dublin, including the <a href="/impact/">Soiléir impact-rating research</a>. Economics and Public Policy at the University of Limerick.</p>
+  <div class="btn-row mt-6"><a class="btn" href="/resume/">Résumé ${ARROW}</a><a class="btn btn--ghost" href="${SITE.linkedin}" rel="noopener">LinkedIn ${EXT}</a></div>
+</section>`
   });
 
   // ---------------- Lab ----------------
   add('/lab/', {
-    title: 'Design engineering lab',
-    description: 'Design engineering experiments by Melvin Jayson Ogbalu: an icon grammar for AI processes, a Three.js motion study and product architecture work.',
+    title: 'Lab',
+    description: 'The Lab: Melvin Jayson Ogbalu’s independent practice exploring where design, research, engineering and emerging technology meet.',
+    image: { src: '/img/lab/dexterity-og.jpg', alt: DEX.label },
     body: `
 <section class="hero wrap">
-  <p class="eyebrow">Lab · Design engineering</p>
-  <h1>Thinking in systems. <span class="serif">Building</span> to learn.</h1>
-  <p class="lead">I like understanding what sits behind an interface: the data, the rules, the transitions between states, and the choices a system asks someone to make. These experiments are where I test those questions in code. Each one says what it does and does not prove.</p>
+  <p class="kicker">The Lab</p>
+  <h1 class="display">Thinking in systems. <span class="serif">Building</span> to learn.</h1>
+  <p class="lead">My independent practice, where design, research and engineering meet. Each experiment starts with a question about how people understand complex systems — and says plainly what it does and does not show.</p>
+</section>
+
+<section class="lab-cinema" aria-labelledby="dex-title">
+  <figure class="lab-cover lab-cover--tall">${dexCover(true)}<figcaption>${esc(DEX.label)}</figcaption></figure>
+  <div class="wrap lab-cinema-copy">
+    <p class="kicker">Experiment 01 · Embodied interaction</p>
+    <h2 id="dex-title">Dexterity Lab: making movement <span class="serif">inspectable.</span></h2>
+    <p class="lead">How should an interface explain what a machine is doing with its hands — which object is active, which phase it is in, what is safe to touch? A procedural Three.js replay you can scrub, slow down and orbit.</p>
+    <p class="small">Simplified geometry and illustrative numbers — not a physics simulation or robot telemetry. The interaction model was informed by an external reference (K3 Embody / Wuji Dexterity Lab), whose design remains with its creators.</p>
+    <div class="btn-row mt-6"><a class="btn" href="/lab/dexterity-lab/">Open the interactive prototype ${ARROW}</a><a class="btn btn--ghost" href="/lab/dexterity-lab/case-study/">Read the study</a></div>
+  </div>
 </section>
 
 <section class="section" aria-labelledby="icons-title">
   <div class="wrap">
-    <div class="section-head"><div><p class="eyebrow">01 · Interactive</p><h2 id="icons-title">An icon grammar for <span class="serif">invisible</span> processes.</h2></div>
-    <p>Icon libraries depict objects. Intelligent products also need to communicate things people cannot see — inference, confidence, delay, handoff and verification. Change the symbol and its tokens to see how a visual language might begin.</p></div>
+    <div class="section-head"><div><p class="kicker">Experiment 02 · Visual language</p><h2 id="icons-title">An icon grammar for <span class="serif">invisible</span> processes.</h2></div>
+    <p>Icon libraries depict objects. Intelligent products also need to show things people cannot see — inference, confidence, delay, handoff and verification. Change the symbol and its tokens to see how such a language might begin.</p></div>
     <div class="icon-lab" data-icon-lab>
       <div class="stage" data-stage aria-live="polite"></div>
       <div class="controls">
@@ -89,26 +100,10 @@ export function pages(h) {
   </div>
 </section>
 
-<section class="section" aria-labelledby="dex-title">
-  <div class="wrap grid">
-    <div class="span-6"><p class="eyebrow">02 · Three.js</p><h2 id="dex-title">Making movement <span class="serif">inspectable.</span></h2></div>
-    <div class="span-5 start-8">
-      <p class="lead">A procedural motion study: change tasks, scrub through time, jump to operations and inspect what a replay shows. The interest is how interfaces make complex movement legible — which object is active, what state an operation is in.</p>
-      <p class="muted mt-5">It is an educational procedural replay with simplified geometry and illustrative numbers — not a physics simulation or real robot telemetry. Its interaction model was informed by an external reference (K3 Embody / Wuji Dexterity Lab), whose design remains with its creators.</p>
-      <div class="btn-row mt-6"><a class="btn" href="/lab/dexterity-lab/">Open the prototype ${ARROW}</a><a class="btn btn--ghost" href="/lab/dexterity-lab/case-study/">Read the write-up</a></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="arch-title">
+<section class="section" aria-labelledby="aura-title">
   <div class="wrap">
-    <div class="section-head"><div><p class="eyebrow">03 · Product architecture</p><h2 id="arch-title">From a diagram to a working product.</h2></div><p>In my own products I work on the structure beneath the interface: data, permissions, workflow state and the questions a product must answer before it deserves to scale.</p></div>
-    <div class="tiles">
-      <a class="tile" href="/work/x-hunt/"><p class="eyebrow eyebrow--plain">X-hunt · Live pilot</p><h3>Who gets to participate?</h3><p>Consent architecture, double opt-in introductions and an assistant with hard limits, in a production web app.</p><span class="foot">${ev('observed')}${ARROW}</span></a>
-      <a class="tile" href="/ventures/"><p class="eyebrow eyebrow--plain">Aura · In development</p><h3>What can a person trust?</h3><p>Research, conversations, decision records and next actions in one workspace. Conversation-first navigation and draft review are documented; advanced capabilities remain plans.</p><span class="foot">${ev('concept')}${ARROW}</span></a>
-      <a class="tile" href="https://reveta.org" rel="noopener"><p class="eyebrow eyebrow--plain">DataFoundry · Documentation-first</p><h3>Where did this insight come from?</h3><p>Architecture exploring lineage, licensing and governance for shared intelligence. A design direction, not a launched marketplace.</p><span class="foot">${ev('concept')}${EXT}</span></a>
-    </div>
-    <div class="aura-study mt-8">
+    <div class="section-head"><div><p class="kicker">From my own products</p><h2 id="aura-title">Judgement, made <span class="serif">visible.</span></h2></div><p>Design questions from X-hunt and Aura that sit between interface and system.</p></div>
+    <div class="aura-study">
       <figure class="shot"><div class="shot-frame shot-frame--dark"><img src="/img/aura/composer.webp" width="1640" height="320" alt="Aura’s message composer: a text box reading “Ask Aura anything…”, a Quick / Deliberate mode switch, Talk and microphone buttons, and a footer line: “Aura works inside your workspace. Nothing leaves it yet. Model status unverified.”" loading="lazy" decoding="async"></div><figcaption>Aura’s composer, captured from a local development build. In development; not a launched product.</figcaption></figure>
       <div class="aura-notes">
         <h3>Aura: judgement made visible</h3>
@@ -116,13 +111,21 @@ export function pages(h) {
         <p>The pilot is written to be falsified: at least a 25% cut in median handling time across three tasks, at least 90% of material claims backed by an original source, and every external message kept as a draft. Any cross-workspace exposure stops it.</p>
       </div>
     </div>
+
   </div>
 </section>
 
-<section class="section" aria-labelledby="site-title">
-  <div class="wrap grid">
-    <div class="span-6"><p class="eyebrow">04 · This site</p><h2 id="site-title">The portfolio is a product too.</h2></div>
-    <div class="span-5 start-8"><p class="lead">Built as a zero-dependency static site: content in one data file, a token-based design system, self-hosted variable fonts, theme-aware SVG diagrams, and no trackers. It works fully without JavaScript and respects reduced-motion preferences.</p><p class="mt-5"><a class="arrow-link" href="${SITE.github}/Melvin-s-Portfolio" rel="noopener">Source on GitHub ${EXT}</a></p></div>
+<section class="section" aria-labelledby="next-title">
+  <div class="wrap">
+    <div class="section-head"><div><p class="kicker">Questions I want to explore next</p><h2 id="next-title">Areas of <span class="serif">interest.</span></h2></div><p>Directions for future experiments. None of these is a project yet.</p></div>
+    <ul class="interests">
+      <li><h3>Human–AI interaction</h3><p>How a system shows confidence, sources and the limits of what it may do.</p></li>
+      <li><h3>Embodied intelligence</h3><p>Interfaces for machines that act in the physical world, and the people who supervise them.</p></li>
+      <li><h3>Spatial computing</h3><p>When depth and space help understanding — and when they only add spectacle.</p></li>
+      <li><h3>Computational design</h3><p>Systems that generate design options, and how a designer stays the author.</p></li>
+      <li><h3>Interaction craft</h3><p>Motion, feedback and timing that make software feel considered.</p></li>
+    </ul>
+    <p class="small mt-6">This site is part of the practice: a hand-built static site with its own design and motion system. <a href="${SITE.github}/Melvin-s-Portfolio" rel="noopener">Source on GitHub</a>.</p>
   </div>
 </section>`
   });
@@ -162,7 +165,7 @@ export function pages(h) {
   <p class="lead">Building my own products means deciding what is worth building, writing the requirements, making trade-offs and testing whether anyone needs the result. These are works in progress, labelled by status — not finished success stories.</p>
 </section>
 <section class="section section--flush"><div class="wrap">
-  <ul class="compact">${VENTURES.map((v) => `<li>${v.href ? `<a href="${esc(v.href)}"${v.href.startsWith('http') ? ' rel="noopener"' : ''}>` : '<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(120px,.6fr) 24px;gap:24px;padding:24px 0">'}<span class="t">${esc(v.name)}<span class="small" style="display:block;font-weight:400">${esc(v.kind)}</span></span><span class="d">${esc(v.body)}</span><span class="s mono">${esc(v.status)}</span>${v.href ? (v.href.startsWith('http') ? EXT : ARROW) + '</a>' : '<span></span></div>'}</li>`).join('')}</ul>
+  <ul class="compact">${VENTURES.map((v) => `<li>${v.href ? `<a href="${esc(v.href)}"${v.href.startsWith('http') ? ' rel="noopener"' : ''}>` : '<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(120px,.6fr) 24px;gap:24px;padding:24px 0">'}<span class="t">${esc(v.name)}<span class="small" style="display:block;font-weight:400">${esc(v.kind)}</span></span><span class="d">${esc(v.body)}</span><span class="s">${esc(v.status)}</span>${v.href ? (v.href.startsWith('http') ? EXT : ARROW) + '</a>' : '<span></span></div>'}</li>`).join('')}</ul>
 </div></section>`
   });
 
@@ -255,7 +258,8 @@ export function pages(h) {
     title: 'Dexterity Lab — making procedural movement understandable',
     type: 'article',
     description: 'A Three.js procedural motion study: task selection, time controls and feedback that make a scripted 3D sequence inspectable, with its limits stated.',
-    body: `<div class="wrap" style="padding-top:48px"><p class="breadcrumb" style="margin:0"><a href="/lab/">Lab</a> / Dexterity Lab</p></div>` + readFileSync(new URL('./content/dexterity-case-study.html', import.meta.url), 'utf8')
+    image: { src: '/img/lab/dexterity-og.jpg', alt: DEX.label },
+    body: `<div class="wrap" style="padding-top:48px"><p class="crumb" style="margin:0"><a href="/lab/">Lab</a> <span aria-hidden="true">/</span> Dexterity Lab</p></div><figure class="lab-cover lab-cover--case wrap">${dexCover(true, '(min-width: 1320px) 1320px, 100vw')}<figcaption>${esc(DEX.label)}</figcaption></figure>` + readFileSync(new URL('./content/dexterity-case-study.html', import.meta.url), 'utf8')
   });
 
   return out;

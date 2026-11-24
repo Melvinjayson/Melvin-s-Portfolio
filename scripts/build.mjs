@@ -3,6 +3,7 @@
 //   node scripts/build.mjs           → writes ./dist
 // Content lives in src/data.mjs; diagrams in src/diagrams.mjs; static assets in src/static.
 import { mkdir, writeFile, rm, cp, readFile, readdir, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE, NAV, EVIDENCE, FLAGSHIPS, SUPPORTING, EXPERIENCE, INDEPENDENT, WRITING, VENTURES } from '../src/data.mjs';
@@ -25,7 +26,7 @@ const MOON = '<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d
 const extLink = (href, text, cls = 'arrow-link') => `<a class="${cls}" href="${esc(href)}" rel="noopener">${text} ${EXT}</a>`;
 
 // ---------- layout ----------
-function head({ title, description, path, type = 'website', jsonld = [], noindex = false }) {
+function head({ title, description, path, type = 'website', jsonld = [], noindex = false, image }) {
   const url = SITE.url + path;
   const full = path === '/' ? `${SITE.name} — Product designer for complex, intelligent systems` : `${title} — ${SITE.name}`;
   const ld = jsonld.map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('');
@@ -43,9 +44,9 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:title" content="${esc(full)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(url)}">
-<meta property="og:image" content="${SITE.url}/og.png">
+<meta property="og:image" content="${SITE.url}${image ? image.src : '/og.png'}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Melvin Jayson Ogbalu — product designer for complex, intelligent systems">
+<meta property="og:image:alt" content="${esc(image ? image.alt : 'Melvin Jayson Ogbalu — product designer for complex, intelligent systems')}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f5f4ef" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
@@ -77,7 +78,7 @@ function footer({ cta = true } = {}) {
   return `<footer class="site-footer">
   <div class="wrap">
     ${cta ? `<div class="cta">
-      <p class="eyebrow">Hiring for senior product design, UX or human–AI interaction?</p>
+      <p class="kicker">Hiring, or working on something hard?</p>
       <h2>Let’s talk about the <span class="serif">problem</span> you’re trying to solve.</h2>
       <div class="btn-row">
         <a class="btn" href="mailto:${SITE.email}">${SITE.email} ${ARROW}</a>
@@ -87,11 +88,11 @@ function footer({ cta = true } = {}) {
     </div>` : ''}
     <div class="footer-cols">
       <div><h2>Work</h2><ul>${FLAGSHIPS.map((f) => `<li><a href="/work/${f.slug}/">${esc(f.org)}</a></li>`).join('')}<li><a href="/work/">All work</a></li></ul></div>
-      <div><h2>Practice</h2><ul><li><a href="/about/">About</a></li><li><a href="/lab/">Design engineering lab</a></li><li><a href="/ventures/">Ventures</a></li><li><a href="/impact/">Research &amp; community</a></li><li><a href="/services/">Advisory</a></li></ul></div>
+      <div><h2>Practice</h2><ul><li><a href="/about/">About</a></li><li><a href="/lab/">Lab</a></li><li><a href="/ventures/">Ventures</a></li><li><a href="/impact/">Research &amp; community</a></li><li><a href="/services/">Advisory</a></li></ul></div>
       <div><h2>Elsewhere</h2><ul><li><a href="${SITE.linkedin}" rel="noopener">LinkedIn</a></li><li><a href="${SITE.github}" rel="noopener">GitHub</a></li><li><a href="${SITE.medium}" rel="noopener">Medium</a></li><li><a href="/writing/">Writing</a></li></ul></div>
       <div><h2>Contact</h2><ul><li><a href="mailto:${SITE.email}">Email</a></li><li><a href="/contact/">Message form</a></li><li><a href="/resume/">Résumé (web &amp; PDF)</a></li></ul></div>
     </div>
-    <div class="colophon"><span>© ${new Date().getFullYear()} ${esc(SITE.name)} · ${esc(SITE.location)}</span><span>Every outcome on this site is labelled with its evidence level. Client names describe engagements, not endorsements.</span></div>
+    <div class="colophon"><span>© ${new Date().getFullYear()} ${esc(SITE.name)} · ${esc(SITE.location)}</span><span>Client names describe engagements, not endorsements.</span></div>
   </div>
 </footer>
 <script src="/js/site.js?v=${BUILT}" defer></script>
@@ -99,8 +100,8 @@ function footer({ cta = true } = {}) {
 </html>`;
 }
 
-export function page({ path, title, description, body, jsonld, cta = true, type, noindex }) {
-  return `${head({ title, description, path, jsonld, type, noindex })}
+export function page({ path, title, description, body, jsonld, cta = true, type, noindex, image }) {
+  return `${head({ title, description, path, jsonld, type, noindex, image })}
 <body>
 ${header(path)}
 <main id="main" tabindex="-1">
@@ -116,23 +117,44 @@ export const evidenceLegend = () => `<div class="ev-legend" role="note" aria-lab
 
 // ---------- reusable blocks ----------
 // Theme-aware image pair: the hidden one is display:none, so it is neither fetched (lazy) nor announced.
-export const themed = (src, w, h, alt, eager = false) => ['light', 'dark'].map((t) => `<img class="th th--${t}" src="${src}-${t}.webp" width="${w}" height="${h}" alt="${esc(alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`).join('');
+export const themed = (src, w, h, alt, eager = false) => ['light', 'dark'].map((t) => `<img class="th th--${t}" src="${src}-${t}.webp" width="${w}" height="${h}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high" ' : ''}loading="lazy" decoding="async">`).join('');
 const vt = (slug) => `style="view-transition-name:case-${slug}"`;
-const projectRow = (f, i) => `<li class="project">
+const tone = (f) => f.tone ? ` style="--tone-l:${f.tone[0]};--tone-d:${f.tone[1]}"` : '';
+const plainDiagram = (slug) => diagrams[slug].replace(/role="img" aria-labelledby="[^"]*"/, 'aria-hidden="true"').replace(/ id="[^"]*"/g, '');
+// Each project's visual identity. Real product imagery where it exists; drawn diagrams otherwise.
+const stageArt = (f, eager = false) => {
+  if (f.art === 'product' && f.gallery) {
+    const g = Object.fromEntries(f.gallery.map((x) => [x.src.split('/').pop(), x]));
+    return `<div class="collage">
+      <div class="collage-main">${themed(g.brief.src, g.brief.w, g.brief.h, '', eager)}</div>
+      <div class="collage-side">${themed(g.step1.src, g.step1.w, g.step1.h, '', false)}</div>
+      <div class="collage-low">${themed(g.ledger.src, g.ledger.w, g.ledger.h, '', false)}</div>
+    </div>`;
+  }
+  if (f.art === 'reframe') return `<div class="reframe-mini"><p><span>The brief</span>“Display the analytics more clearly.”</p><p><span>The problem</span>How teams coordinate around models, releases and knowledge.</p></div>`;
+  return `<div class="stage-diagram">${plainDiagram(f.slug)}</div>`;
+};
+const feature = (f, i) => `<li class="feature feature--${f.art}"${tone(f)}>
   <a href="/work/${f.slug}/">
-    <span class="kicker-num">${String(i + 1).padStart(2, '0')}</span>
-    <div>
-      <p class="status">${esc(f.status)}</p>
+    <div class="feature-stage" aria-hidden="true">${stageArt(f, i === 0)}</div>
+    <div class="feature-copy">
+      <p class="feature-meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(f.org)}</span><span>${esc(f.status)}</span></p>
       <h3 ${vt(f.slug)}>${esc(f.title)}</h3>
-      <div class="meta"><span>${esc(f.org)}</span><span>${esc(f.capability)}</span><span>${esc(f.domain)}</span></div>
       <p>${esc(f.card)}</p>
-      <div class="readmore"><span class="arrow-link">Read case study ${ARROW}</span></div>
+      <span class="feature-more">View the case study ${ARROW}</span>
     </div>
-    <div class="figure-frame${f.thumb ? ' figure-frame--ui' : ''}" aria-hidden="true">${f.thumb ? `<div>${themed(f.thumb.src, f.thumb.w, f.thumb.h, '', i === 0)}</div>` : diagrams[f.slug].replace(/role="img" aria-labelledby="[^"]*"/, 'aria-hidden="true"').replace(/ id="[^"]*"/g, '')}</div>
   </a>
 </li>`;
 
-const compactRow = (s) => `<li><a href="/work/${s.slug}/"><span class="t">${esc(s.org)}</span><span class="d">${esc(s.title)}</span><span class="s">${ev(s.maturity)}</span>${ARROW}</a></li>`;
+const compactRow = (s) => `<li><a href="/work/${s.slug}/"><span class="t">${esc(s.org)}</span><span class="d">${esc(s.title)}</span><span class="s">${esc(s.domain.split(' · ')[0])}</span>${ARROW}</a></li>`;
+
+// ---------- Dexterity cover ----------
+// Drop a supplied concept image at src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp} and it replaces the render.
+const hasConcept = existsSync(new URL('../src/static/img/lab/dexterity-concept-1440.webp', import.meta.url));
+export const DEX = hasConcept
+  ? { base: '/img/lab/dexterity-concept', w: 1440, h: 810, alt: 'Concept visualisation of a robotic arm and hand reaching toward a stack of blocks.', label: 'AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype.' }
+  : { base: '/img/lab/dexterity-render', w: 1440, h: 810, alt: 'A simplified robot wrist and gripper beside a wooden block tower, rendered in soft light on a dark ground.', label: 'Rendered from the interactive Three.js prototype.' };
+export const dexCover = (eager = false, sizes = '100vw') => `<picture><source type="image/avif" srcset="${DEX.base}-800.avif 800w, ${DEX.base}-1440.avif 1440w" sizes="${sizes}"><img src="${DEX.base}-1440.webp" srcset="${DEX.base}-800.webp 800w, ${DEX.base}-1440.webp 1440w" sizes="${sizes}" width="${DEX.w}" height="${DEX.h}" alt="${esc(DEX.alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async"></picture>`;
 
 // ---------- pages ----------
 const personLd = {
@@ -144,92 +166,58 @@ const personLd = {
 };
 
 function home() {
+  const [lead, ...rest] = FLAGSHIPS;
   return page({
     path: '/', title: 'Home', description: SITE.description, jsonld: [personLd, { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url }],
     body: `
-<section class="hero wrap" aria-labelledby="hero-title">
-  <div class="hero-grid">
-    <div>
-      <p class="eyebrow">${esc(SITE.name)} · Product designer · Dublin</p>
-      <h1 id="hero-title">Designing complex, intelligent systems people can <span class="serif">trust.</span></h1>
-      <p class="lead">I find the problem underneath the brief, then design the product that solves it — across digital banking, healthcare, public services and machine-learning operations. Computer Science background; I prototype in code.</p>
-      <div class="btn-row">
-        <a class="btn" href="#work">Selected work ${ARROW}</a>
-        <a class="btn btn--ghost" href="/resume/">Résumé</a>
-        <a class="btn btn--ghost" href="mailto:${SITE.email}">Email me</a>
-      </div>
-    </div>
-    <aside class="index-card" aria-label="At a glance">
-      <dl>
-        <div><dt>Now</dt><dd>${esc(SITE.title)}, ${esc(SITE.employer)}</dd></div>
-        <div><dt>Before</dt><dd>UX Design Lead, Fidelity Bank — led design and engineering</dd></div>
-        <div><dt>Building</dt><dd>X-hunt — co-founder, live pilot</dd></div>
-        <div><dt>Focus</dt><dd>Human–AI interaction, enterprise and regulated services, design systems</dd></div>
-        <div><dt>Mentoring</dt><dd>ADPList Top 1% UX mentor, 200+ mentees</dd></div>
-      </dl>
-    </aside>
+<section class="hero hero--home wrap" aria-labelledby="hero-title">
+  <p class="kicker">${esc(SITE.name)} — product designer, Dublin</p>
+  <h1 id="hero-title" class="display">I design complex systems people can <span class="serif">understand</span> and trust.</h1>
+  <div class="hero-foot">
+    <p class="lead">For banks, health organisations, public services and machine-learning teams, I find the human problem underneath the brief — then shape the product, the service and the decisions around it.</p>
+    <div class="btn-row"><a class="btn" href="#work">Selected work ${ARROW}</a><a class="btn btn--ghost" href="/about/">About me</a></div>
   </div>
 </section>
 
-<section class="section" id="work" aria-labelledby="work-title">
+<section class="work-features" id="work" aria-labelledby="work-title">
   <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">Selected work</p><h2 id="work-title">Four problems, <span class="serif">four kinds</span> of ownership.</h2></div>
-      <p>A live product I co-founded and build, product leadership in banking, human–AI workflow design in healthcare, and problem framing in machine-learning operations. Each case says what I owned, what shipped and how its outcomes are known.</p>
-    </div>
-    <ol class="projects">${FLAGSHIPS.map(projectRow).join('')}</ol>
+    <h2 id="work-title" class="section-title">Selected work</h2>
+    <ol class="features">${FLAGSHIPS.map(feature).join('')}</ol>
+    <p class="more-work">Also: ${SUPPORTING.slice(0, 4).map((x) => `<a href="/work/${x.slug}/">${esc(x.org)}</a>`).join(', ')} and more in <a href="/work/">all work</a>.</p>
   </div>
 </section>
 
-<section class="section" aria-labelledby="how-title">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">How I work</p><h2 id="how-title">Four habits, each with <span class="serif">evidence.</span></h2></div>
-      <p>Not a process diagram. These are the judgements that recur across my work — follow the links to where they happened.</p>
-    </div>
-    <div class="principles">
-      ${[
-        ['01', 'Find the problem underneath the brief.', 'An analytics request turned out to be a coordination problem; an app redesign turned out to be an operations problem. I test the brief before designing to it.', [['YouTube', '/work/youtube-ml/'], ['Fidelity Bank', '/work/fidelity-bank/']]],
-        ['02', 'Design the service, not only the screen.', 'Customers feel the tools staff use, the contact-centre loop and the clarity of the next step. I map both sides of the line of interaction.', [['Fidelity Bank', '/work/fidelity-bank/'], ['Mater Private', '/work/mater-private/']]],
-        ['03', 'Keep people in authority over automation.', 'I decide what an AI system may do — and, as importantly, what it may not: draft but never decide, assist but never replace expert sign-off.', [['X-hunt', '/work/x-hunt/'], ['ViiV Healthcare', '/work/viiv-healthcare/'], ['Autonomy proposal', '/work/autonomy-proposal/']]],
-        ['04', 'Build to learn, and say what is unproven.', 'I prototype in code to test whether an interaction explains what it needs to, and I label concepts as concepts.', [['X-hunt', '/work/x-hunt/'], ['The Lab', '/lab/']]]
-      ].map(([n, h, p, links]) => `<article class="principle"><span class="kicker-num">${n}</span><h3>${h}</h3><p>${p}</p><div class="proof">${links.map(([t, u]) => `<a class="arrow-link" href="${u}">${t} ${ARROW}</a>`).join('')}</div></article>`).join('')}
-    </div>
+<section class="qualities wrap" aria-labelledby="q-title">
+  <div class="qualities-head">
+    <h2 id="q-title">Design is the work. <span class="serif">Everything else</span> makes it sharper.</h2>
   </div>
+  <ol class="q-list">
+    ${[
+      ['Designer', 'Human-centred products and services that make complicated things feel clear.'],
+      ['Strategist', 'Reframing the problem before solving it, and shaping where a product should go.'],
+      ['Researcher', 'Understanding people, the systems around them, and what is genuinely possible.'],
+      ['Creative technologist', 'Making ambitious ideas tangible — prototyping in code when a picture cannot answer the question.']
+    ].map(([h, p], k) => `<li${k === 0 ? ' class="is-primary"' : ''}><span class="num">${String(k + 1).padStart(2, '0')}</span><h3>${h}</h3><p>${p}</p></li>`).join('')}
+  </ol>
 </section>
 
-<section class="section" aria-labelledby="more-title">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">More work</p><h2 id="more-title">Supporting projects.</h2></div>
-      <p>Shorter, public-safe summaries of client and proposal work. Confidential details are withheld.</p>
+<section class="lab-feature" aria-labelledby="lab-title">
+  <a href="/lab/" class="lab-feature-link">
+    <figure class="lab-cover">${dexCover(false)}<figcaption>${esc(DEX.label)}</figcaption></figure>
+    <div class="wrap lab-feature-copy">
+      <p class="kicker">The Lab</p>
+      <h2 id="lab-title">An independent practice where design, research and engineering <span class="serif">meet.</span></h2>
+      <span class="feature-more">Enter the Lab ${ARROW}</span>
     </div>
-    <ul class="compact">${SUPPORTING.map(compactRow).join('')}</ul>
-  </div>
+  </a>
 </section>
 
-<section class="section" aria-labelledby="exp-title">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">Experience</p><h2 id="exp-title">From the bank counter to <span class="serif">machine learning.</span></h2></div>
-      <p>I began close to customers in financial services. That early view of the gap between how a service is imagined and how it feels still shapes the questions I ask.</p>
-    </div>
-    <ol class="timeline">${EXPERIENCE.map((e) => `<li><span class="when">${e.when}</span><span class="role">${esc(e.role)}<span class="org">${esc(e.org)} · ${esc(e.where)}</span></span><span class="what">${esc(e.what)}</span></li>`).join('')}</ol>
-    <div class="btn-row mt-6"><a class="btn btn--ghost" href="/resume/">Full résumé ${ARROW}</a><a class="btn btn--ghost" href="/about/">About me ${ARROW}</a></div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="lab-title">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">Beyond client work</p><h2 id="lab-title">Building, writing, <span class="serif">mentoring.</span></h2></div>
-      <p>Different ways of pursuing the same question: how design and technology can help people do things that matter.</p>
-    </div>
-    <div class="tiles">
-      <a class="tile" href="/lab/"><p class="eyebrow eyebrow--plain">Design engineering</p><h3>The Lab</h3><p>An icon grammar for invisible AI processes, a Three.js motion study, and how I think about the handoff from strategy to implementation.</p><span class="foot"><span class="small">Interactive</span>${ARROW}</span></a>
-      <a class="tile" href="/ventures/"><p class="eyebrow eyebrow--plain">Ventures</p><h3>Reveta, X-hunt, Aura</h3><p>Products I am building myself — where there is no brief to hide behind and every decision is mine to defend.</p><span class="foot"><span class="small">Live pilot · in development</span>${ARROW}</span></a>
-      <a class="tile" href="/writing/"><p class="eyebrow eyebrow--plain">Writing &amp; mentoring</p><h3>Ideas in public</h3><p>Essays on systems thinking and design, a published book, and mentoring designers through ADPList.</p><span class="foot"><span class="small">Medium · book</span>${ARROW}</span></a>
-    </div>
+<section class="beyond wrap" aria-labelledby="beyond-title">
+  <h2 id="beyond-title" class="section-title">Beyond the brief</h2>
+  <div class="beyond-grid">
+    <a href="/about/#mentoring"><span class="big">200+</span><span>designers mentored through ADPList, where I am a Top 1% global UX mentor.</span></a>
+    <a href="/writing/"><span class="big serif">Writing</span><span>Essays on systems, design and intelligent technology, and a book: <em>Designing Life’s Tapestry</em>.</span></a>
+    <a href="/ventures/"><span class="big serif">Ventures</span><span>X-hunt, Aura and the Reveta ecosystem — products I build myself.</span></a>
   </div>
 </section>`
   });
@@ -237,88 +225,113 @@ function home() {
 
 function workIndex() {
   return page({
-    path: '/work/', title: 'Work', description: 'Case studies in product leadership, human–AI interaction, problem framing and zero-to-one product building by Melvin Jayson Ogbalu.',
+    path: '/work/', title: 'Work', description: 'Selected product design work by Melvin Jayson Ogbalu: a live AI-assisted network, a banking service redesign, human–AI workflows in healthcare and problem framing in machine-learning operations.',
     body: `
 <section class="hero wrap">
-  <p class="eyebrow">Work</p>
-  <h1>Case studies.</h1>
-  <p class="lead">Each case states my role, the engagement type, the work’s maturity and how its outcomes are known. Client work is described at the level I can publish; diagrams are drawn for this portfolio and labelled as such.</p>
-  ${evidenceLegend()}
+  <p class="kicker">Work</p>
+  <h1 class="display">Selected <span class="serif">work.</span></h1>
+  <p class="lead">Four stories about finding the real problem and designing for it — from a product I co-founded to client work in banking, healthcare and machine learning.</p>
 </section>
-<section class="section section--flush" aria-labelledby="flag-title">
+<section class="work-features" aria-labelledby="flag-title">
   <div class="wrap">
-    <h2 id="flag-title" class="visually-hidden">Flagship case studies</h2>
-    <ol class="projects">${FLAGSHIPS.map(projectRow).join('')}</ol>
+    <h2 id="flag-title" class="visually-hidden">Case studies</h2>
+    <ol class="features">${FLAGSHIPS.map(feature).join('')}</ol>
   </div>
 </section>
 <section class="section" aria-labelledby="sup-title">
   <div class="wrap">
-    <div class="section-head"><div><p class="eyebrow">Supporting work</p><h2 id="sup-title">Shorter summaries.</h2></div><p>Client and proposal work where only a public-safe summary can be shared.</p></div>
+    <div class="section-head"><div><h2 id="sup-title">More work</h2></div><p>Shorter accounts of client and proposal work, told at the level that can be shared.</p></div>
     <ul class="compact">${SUPPORTING.map(compactRow).join('')}</ul>
   </div>
 </section>`
   });
 }
 
+const QUAL = { observed: 'Visible in the live product', codebase: 'Recorded in the product repository', reported: 'Reported by the project', concept: 'Concept — not deployed', none: 'Not measured' };
+
+function caseCover(f) {
+  const fig = diagrams[f.slug];
+  if (f.art === 'product') return `<div class="case-stage case-stage--product" aria-hidden="true"><div class="wrap">${stageArt(f, true)}</div></div>`;
+  if (f.art === 'reframe') return `<div class="case-stage case-stage--reframe wrap">
+      <div class="reframe"><div><span class="kicker">The brief</span><p class="serif">“Display the analytics more clearly.”</p></div><div><span class="kicker">The problem underneath</span><p>The problem was not how data was displayed, but how teams coordinated around it.</p></div></div>
+      <figure class="stage-figure" tabindex="0" role="region" aria-label="Diagram — scroll horizontally on small screens">${fig}</figure>
+    </div>`;
+  return `<div class="case-stage case-stage--${f.art} wrap"><figure class="stage-figure" tabindex="0" role="region" aria-label="Diagram — scroll horizontally on small screens">${fig}</figure></div>`;
+}
+
 function flagship(f, i) {
   const next = FLAGSHIPS[(i + 1) % FLAGSHIPS.length];
-  const fig = diagrams[f.slug];
+  const fact = (k) => (f.summary.find(([x]) => x === k) || [])[1];
+  const facts = [['Role', fact('Role')], ['When', fact('When') || fact('Engagement')], ['Status', fact('Status') || fact('Maturity')]].filter(([, v]) => v);
+  const [first, ...more] = f.chapters;
+  const chapter = ([eyebrow, h, paras]) => `<section class="chapter"><header><p class="kicker">${esc(eyebrow)}</p><h2>${esc(h)}</h2></header><div class="body">${paras.map((p) => `<p>${p}</p>`).join('')}</div></section>`;
+  const visibleOutcomes = f.outcomes.filter(([, , k]) => k !== 'codebase');
+  const repoOutcomes = f.outcomes.filter(([, , k]) => k === 'codebase');
   return page({
     path: `/work/${f.slug}/`, title: `${f.org} — ${f.title}`, type: 'article', description: f.card,
     jsonld: [{ '@context': 'https://schema.org', '@type': 'CreativeWork', name: f.title, about: f.domain, author: { '@type': 'Person', name: SITE.name }, url: `${SITE.url}/work/${f.slug}/` }],
     body: `
-<article>
-<header class="case-hero wrap">
-  <p class="breadcrumb"><a href="/work/">Work</a> / ${esc(f.org)}</p>
-  <p class="eyebrow">${esc(f.org)} · ${esc(f.domain)}</p>
-  <p class="status">${esc(f.status)}</p>
-  <h1 ${vt(f.slug)}>${esc(f.title)}</h1>
-  <p class="lead">${esc(f.lede)}</p>
-  <dl class="summary">${f.summary.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-  <div class="tldr">${f.tldr.map(([k, v]) => `<div><h2>${esc(k)}</h2><p>${esc(v)}</p></div>`).join('')}</div>
-  <div class="btn-row mt-6">${ev(f.maturity)}${f.link ? extLink(f.link.href, f.link.label) : ''}</div>
+<article class="case case--${f.art}"${tone(f)}>
+<header class="case-cover">
+  <div class="wrap case-title">
+    <p class="crumb"><a href="/work/">Work</a> <span aria-hidden="true">/</span> ${esc(f.org)}</p>
+    <h1 ${vt(f.slug)}>${esc(f.title)}</h1>
+  </div>
+  ${caseCover(f)}
 </header>
 
 <div class="wrap">
-  ${f.gallery ? `<section class="gallery" aria-labelledby="ui-${f.slug}">
-    <header class="gallery-head"><p class="eyebrow">The product</p><h2 id="ui-${f.slug}">What a person actually sees.</h2><p class="small">${esc(f.galleryNote)}</p></header>
-    <div class="gallery-grid">${f.gallery.map((g, k) => `<figure class="shot shot--${[5, 7, 12, 7, 5][k] || 12}"><div class="shot-frame">${themed(g.src, g.w, g.h, g.alt)}</div><figcaption>${esc(g.caption)}</figcaption></figure>`).join('')}</div>
-  </section>` : ''}
-  <figure class="case-figure">
-    <div class="frame" tabindex="0" role="region" aria-label="Diagram — scroll horizontally on small screens">${fig}</div>
-    <figcaption><span class="ev ev--none">Explanatory diagram</span> Drawn for this portfolio to explain the design reasoning. Not a client deliverable or a screenshot of a shipped system. <span class="scroll-hint">Scroll sideways to see all of it.</span></figcaption>
-  </figure>
-
-  ${f.chapters.map(([eyebrow, h, paras]) => `<section class="chapter"><header><p class="eyebrow">${esc(eyebrow)}</p><h2>${esc(h)}</h2></header><div class="body">${paras.map((p) => `<p>${p}</p>`).join('')}</div></section>`).join('')}
-
-  <section class="chapter" aria-labelledby="own-${f.slug}">
-    <header><p class="eyebrow">My ownership</p><h2 id="own-${f.slug}">What I owned, influenced and shared.</h2></header>
-    <div class="body"><div class="ownership">
-      <div><h3>Owned</h3><ul>${f.ownership.owned.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-      <div><h3>Influenced</h3><ul>${f.ownership.influenced.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-      <div><h3>Worked with</h3><ul>${f.ownership.team.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-    </div></div>
+  <section class="case-intro">
+    <p class="case-lede">${esc(f.lede)}</p>
+    <dl class="case-facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}${f.link ? `<div><dt>Live</dt><dd>${extLink(f.link.href, f.link.label.replace('Visit ', ''))}</dd></div>` : ''}</dl>
   </section>
 
+  <section class="case-short" aria-label="In short">${f.tldr.map(([k, v]) => `<div><h2>${esc(k)}</h2><p>${esc(v)}</p></div>`).join('')}</section>
+
+  ${chapter(first)}
+
+  <blockquote class="pull"><p class="serif">${esc(f.insight)}</p></blockquote>
+
+  ${f.gallery ? `<section class="gallery" aria-labelledby="ui-${f.slug}">
+    <header class="gallery-head"><h2 id="ui-${f.slug}">What a person actually sees.</h2><p class="small">${esc(f.galleryNote)}</p></header>
+    <div class="gallery-grid">${f.gallery.map((g, k) => `<figure class="shot shot--${[5, 7, 12, 7, 5][k] || 12}"><div class="shot-frame">${themed(g.src, g.w, g.h, g.alt)}</div><figcaption>${esc(g.caption)}</figcaption></figure>`).join('')}</div>
+  </section>` : ''}
+
+  ${more.map(chapter).join('')}
+
+  ${f.art === 'product' ? `<figure class="case-figure"><div class="frame" tabindex="0" role="region" aria-label="Diagram — scroll horizontally on small screens">${diagrams[f.slug]}</div><figcaption>How the trust model works, drawn for this portfolio.</figcaption></figure>` : ''}
+
   <section class="section" aria-labelledby="dec-${f.slug}">
-    <div class="section-head"><div><p class="eyebrow">Decisions and trade-offs</p><h2 id="dec-${f.slug}">The calls that shaped it.</h2></div></div>
-    <ol class="decisions">${f.decisions.map((d, j) => `<li class="decision"><span class="kicker-num">${String(j + 1).padStart(2, '0')}</span><div><h3>${esc(d.title)}</h3></div><div class="rationale"><p>${esc(d.why)}</p><dl class="mt-5"><dt>Instead of</dt><dd>${esc(d.alt)}</dd><dt>Trade-off</dt><dd>${esc(d.tradeoff)}</dd></dl></div></li>`).join('')}</ol>
+    <h2 id="dec-${f.slug}" class="section-title">Decisions and trade-offs</h2>
+    <ol class="decisions">${f.decisions.map((d, j) => `<li class="decision"><span class="num">${String(j + 1).padStart(2, '0')}</span><h3>${esc(d.title)}</h3><div class="rationale"><p>${esc(d.why)}</p><dl><div><dt>Instead of</dt><dd>${esc(d.alt)}</dd></div><div><dt>Trade-off</dt><dd>${esc(d.tradeoff)}</dd></div></dl></div></li>`).join('')}</ol>
   </section>
 
   <section class="section" aria-labelledby="out-${f.slug}">
-    <div class="section-head"><div><p class="eyebrow">Outcomes</p><h2 id="out-${f.slug}">What is known, and how.</h2></div><p>Outcomes are separated from what is reported, proposed or unmeasured.</p></div>
-    <table class="outcomes"><thead><tr><th scope="col">Measure</th><th scope="col">Result</th><th scope="col">Evidence</th></tr></thead><tbody>
-      ${f.outcomes.map(([m, r, k]) => `<tr><td>${esc(m)}</td><td>${esc(r)}</td><td>${ev(k)}</td></tr>`).join('')}
-    </tbody></table>
+    <h2 id="out-${f.slug}" class="section-title">What happened</h2>
+    <ul class="results">${visibleOutcomes.map(([m, r, k]) => `<li><h3>${esc(m)}</h3><p>${esc(r)}</p><span class="qual">${QUAL[k]}</span></li>`).join('')}</ul>
   </section>
 
-  <section class="chapter">
-    <header><p class="eyebrow">Reflection</p><h2>What I took from it.</h2></header>
-    <div class="body"><p class="reflection">${esc(f.reflection)}</p><p>${esc(f.next)}</p></div>
+  <section class="closing">
+    <p class="reflection serif">${esc(f.reflection)}</p>
+    <p class="muted">${esc(f.next)}</p>
   </section>
 
-  <a class="next-case" href="/work/${next.slug}/"><div><p class="eyebrow">Next case study · ${esc(next.org)}</p><h2>${esc(next.title)}</h2></div>${ARROW}</a>
+  <details class="disclosure validation">
+    <summary>Role, team and how this was validated</summary>
+    <div>
+      <div class="ownership">
+        <div><h3>Owned</h3><ul>${f.ownership.owned.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div><h3>Influenced</h3><ul>${f.ownership.influenced.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div><h3>Worked with</h3><ul>${f.ownership.team.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      </div>
+      ${f.validation ? `<h3 class="mt-6">Build and validation</h3>${f.validation.map((p) => `<p>${esc(p)}</p>`).join('')}` : ''}
+      ${repoOutcomes.length ? `<ul class="plain">${repoOutcomes.map(([m, r]) => `<li><strong>${esc(m)}:</strong> ${esc(r)}</li>`).join('')}</ul>` : ''}
+      <p class="small mt-5">Each result is labelled by how it is known. Diagrams are drawn for this portfolio to explain the design reasoning; they are not client deliverables or screenshots of shipped systems.${f.gallery ? ' Interface images are rendered from the product’s own components with fictional data.' : ''}</p>
+    </div>
+  </details>
 </div>
+
+<a class="next-case"${tone(next)} href="/work/${next.slug}/"><div class="wrap"><p class="kicker">Next — ${esc(next.org)}</p><h2>${esc(next.title)}</h2>${ARROW}</div></a>
 </article>`
   });
 }
@@ -329,17 +342,19 @@ function supporting(s) {
     body: `
 <article>
 <header class="case-hero wrap">
-  <p class="breadcrumb"><a href="/work/">Work</a> / ${esc(s.org)}</p>
-  <p class="eyebrow">${esc(s.org)} · ${esc(s.domain)}</p>
+  <p class="crumb"><a href="/work/">Work</a> <span aria-hidden="true">/</span> ${esc(s.org)}</p>
   <h1>${esc(s.title)}</h1>
-  <dl class="summary"><div><dt>Role</dt><dd>${esc(s.role)}</dd></div><div><dt>Format</dt><dd>Public-safe summary</dd></div><div><dt>Maturity</dt><dd>${ev(s.maturity)}</dd></div><div><dt>Confidentiality</dt><dd>Client screens and internal details withheld</dd></div></dl>
+  <dl class="case-facts"><div><dt>Client</dt><dd>${esc(s.org)}</dd></div><div><dt>Role</dt><dd>${esc(s.role)}</dd></div><div><dt>Status</dt><dd>${esc(QUAL[s.maturity])}</dd></div></dl>
+  <p class="small mt-5">A short account. Client screens and internal details are withheld.</p>
 </header>
 <div class="wrap">
-  <section class="chapter"><header><p class="eyebrow">The problem</p><h2>Beyond the brief.</h2></header><div class="body"><p>${esc(s.problem)}</p></div></section>
-  <section class="chapter"><header><p class="eyebrow">My contribution</p><h2>What I worked on.</h2></header><div class="body"><p>${esc(s.work)}</p></div></section>
-  <section class="chapter"><header><p class="eyebrow">Outcome</p><h2>What can be said.</h2></header><div class="body"><p>${esc(s.outcome[0])}</p><p>${ev(s.outcome[1])}</p></div></section>
-  <section class="chapter"><header><p class="eyebrow">Reflection</p><h2>What stayed with me.</h2></header><div class="body"><p class="reflection">${esc(s.learning)}</p></div></section>
-  <a class="next-case" href="/work/"><div><p class="eyebrow">Back to all work</p><h2>See the flagship case studies</h2></div>${ARROW}</a>
+  <section class="chapter"><header><p class="kicker">The problem</p><h2>Beyond the brief.</h2></header><div class="body"><p>${esc(s.problem)}</p></div></section>
+  <section class="chapter"><header><p class="kicker">My contribution</p><h2>What I worked on.</h2></header><div class="body"><p>${esc(s.work)}</p></div></section>
+  <section class="chapter"><header><p class="kicker">Outcome</p><h2>What can be said.</h2></header><div class="body"><p>${esc(s.outcome[0])}</p><p class="qual">${QUAL[s.outcome[1]]}</p></div></section>
+  <section class="closing"><p class="reflection serif">${esc(s.learning)}</p></section>
+</div>
+<a class="next-case" href="/work/"><div class="wrap"><p class="kicker">Back to all work</p><h2>See the selected case studies</h2>${ARROW}</div></a>
+<div>
 </div>
 </article>`
   });
@@ -422,7 +437,7 @@ async function main() {
   for (const [i, f] of FLAGSHIPS.entries()) await add(`/work/${f.slug}/`, flagship(f, i));
   for (const s of SUPPORTING) await add(`/work/${s.slug}/`, supporting(s));
   await add('/resume/', resume());
-  for (const p of extraPages({ page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, INDEPENDENT, FLAGSHIPS })) await add(p.path, p.html);
+  for (const p of extraPages({ page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, INDEPENDENT, FLAGSHIPS, EXPERIENCE, DEX, dexCover })) await add(p.path, p.html);
 
   // Minify the stylesheet (comments + whitespace) — no dependency needed.
   const cssPath = join(OUT, 'css/site.css');

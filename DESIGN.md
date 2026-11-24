@@ -1,17 +1,59 @@
 # DESIGN.md — Melvin Jayson portfolio
 
-The working reference for how this site looks, moves and behaves. Tokens live in `src/static/css/site.css`; colour, type and layout rationale are in `docs/design-system.md`. This file is canonical for **motion, interaction and the image system**. Last updated 24 November 2026.
+The working reference for how this site looks, moves and behaves. Tokens live in `src/static/css/site.css`; colour, type and layout rationale are in `docs/design-system.md`. This file is canonical for **creative direction, art direction, motion, interaction and imagery**. Last updated 24 November 2026.
 
-## 1. What the design has to do
+## 1. Creative direction
 
-The site is read by recruiters and hiring managers in a few minutes, mostly on laptops, often on phones. It has to show three things quickly: what Melvin owned, what shipped, and how outcomes are known. The visual language is editorial: rules, whitespace and type do the structuring. It should feel exceptional because of its precision, not because of how much it moves.
+**Design first. Engineering supports the experience.** This is the personal site of a senior product designer with engineering fluency, not an engineer who designs. Every page should read that way in its first screen.
 
-Rules that follow from that:
+The direction is editorial and monochrome, with one carefully chosen tone per project. The benchmarks are the confidence of Pentagram and AREA 17, Work & Co's product-first storytelling and Apple's hierarchy. They are references for judgement, not looks to copy.
 
-1. **Real product before diagrams.** Where a real interface exists (X-hunt, Aura), it leads. Explanatory diagrams come second and are always labelled as drawn for the portfolio.
-2. **Facts on cards, evidence in cases.** Cards carry a factual status line (`Live pilot · 2026 · Co-founder`). Evidence badges appear next to the outcomes they qualify, not as a row of hedges on the homepage.
-3. **One accent, used as a mark.** `--accent` (#C7EC8B) is a fill. It marks the live project, the current page and human gates in diagrams. It is never used as text on light backgrounds.
-4. **Everything works without JavaScript and without motion.**
+| Move away from | Move towards |
+|---|---|
+| Repository evidence on the surface | Human problems, design decisions and outcomes |
+| One case-study template for every project | A cover composed for each project (see §1.3) |
+| Uppercase monospace eyebrows, pill badges, ruled tables | Sentence-case labels, plain-language qualifiers, whitespace |
+| Grids of identical cards | Alternating, asymmetric features with large imagery |
+| Documentation language ("evidence level", "maturity") | Story language ("What happened", "Role, team and how this was validated") |
+
+### 1.1 Positioning hierarchy
+
+Design is the primary identity. Strategy, research and creative technology are what make it distinctive. The homepage states this once, in that order: Designer (primary, larger), Strategist, Researcher, Creative technologist. Seniority is shown by the quality of the work, not by repeating it.
+
+### 1.2 Typography
+
+- **Display** (`.display`): Geist 520, `clamp(3rem → 8.75rem)`, tracking −0.058em, line-height 0.92. One per page, at most 12–13 characters per line.
+- **Serif voice**: Instrument Serif italic carries emphasis, section titles (`.section-title`), pull quotes (`.pull`) and reflections. Use one serif phrase per headline at most.
+- **Monospace** is limited to numerals (`.num`: 01, 02) and the labels inside diagrams. No uppercase mono eyebrows.
+- **Labels** (`.kicker`, `.crumb`): Geist 500, 0.95rem, sentence case, `--ink-3`.
+
+### 1.3 Project tones and cover art
+
+Each flagship sets a tone pair in `src/data.mjs`. It is used for the homepage feature stage, the case cover, the gallery mat and the "next case" band.
+
+| Project | Light | Dark | Cover (`art`) | Why |
+|---|---|---|---|---|
+| X-hunt | `#DCEFE2` mint | `#0B1D14` | `product`: a collage of real interface renders | The only flagship with a live interface, so it leads with it |
+| Fidelity Bank | `#E1E5F1` slate | `#0D1322` | `blueprint`: the service blueprint, full width | The story is the service behind the app |
+| ViiV Healthcare | `#F1E5DB` clay | `#1F140E` | `flow`: the gated workflow, centred | The story is where automation sits |
+| YouTube / Xray | `#E8E3F1` lilac | `#15112A` | `reframe`: type as the visual ("The brief" struck through, then the problem) | The story is a reframe, and type tells it best |
+
+Tones are muted so that ink text keeps AA contrast on them in both themes. Project tones never borrow a client's brand colour.
+
+### 1.4 Case-study structure (shared spine, individual surface)
+
+The order is: cover → lede and facts → in short → first chapter → **pull quote** → product gallery (where real imagery exists) → further chapters → decisions and trade-offs → what happened → reflection → **"Role, team and how this was validated"** (a disclosure holding ownership, build and validation notes, repository facts, and how diagrams and imagery were made) → next case.
+
+- Outcomes stay visible, each with a one-line plain qualifier ("Visible in the live product", "Reported by the project", "Not measured").
+- Facts known only from the repository (test results, decision records) live in the disclosure.
+
+### 1.5 Imagery integrity
+
+Never fabricate client screens, research findings or outcomes. Real product imagery is captioned with how it was made. Diagrams are labelled as drawn for the portfolio. The Dexterity cover shows the label "Rendered from the interactive Three.js prototype". When an AI-generated concept image is supplied (`src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp}`), the build swaps it in automatically with the label "AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype." The interactive prototype always stays a separate experience.
+
+### 1.6 The Lab
+
+The Lab is an independent practice where design, research and engineering meet. It has a fixed dark, cinematic surface in both themes. Experiments are numbered, and future directions are listed as "areas of interest". They are never presented as projects.
 
 ## 2. Motion principles
 
