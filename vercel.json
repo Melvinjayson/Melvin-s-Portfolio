@@ -10,8 +10,13 @@
       "permanent": true
     },
     {
-      "source": "/notebook/:path*",
-      "destination": "/lab/:path*",
+      "source": "/notebook/",
+      "destination": "/lab/",
+      "permanent": true
+    },
+    {
+      "source": "/notebook/:path+",
+      "destination": "/lab/:path+",
       "permanent": true
     }
   ],

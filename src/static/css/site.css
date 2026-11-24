@@ -442,3 +442,48 @@ details.disclosure>div{padding-bottom:var(--s-5);color:var(--ink-2)}
   .resume h2{break-after:avoid}
   @page{size:A4;margin:14mm 14mm}
 }
+
+/* ---------- Dexterity Lab write-up (/lab/dexterity-lab/case-study/) ---------- */
+.dx-story .btn-row{margin-top:var(--s-6)}
+.dx-hero{padding-block:clamp(56px,9vw,132px) clamp(40px,6vw,80px)}
+.dx-hero h1{max-width:15ch}
+.dx-lead{font-size:var(--step-1);line-height:1.55;color:var(--ink-2);max-width:62ch;margin-top:var(--s-6)}
+.dx-status{display:flex;flex-wrap:wrap;gap:var(--s-2);margin-top:var(--s-6)}
+.dx-status span{font:500 .78rem/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.03em;border:1px solid var(--line-strong);border-radius:999px;padding:7px 12px;color:var(--ink-2)}
+.dx-art{background:#0a0b0a;color:#f2f1ec;border-radius:var(--radius);padding:clamp(24px,5vw,64px);margin-block:var(--s-7);border:1px solid var(--line)}
+.dx-art .on-dark{color:#b9bdb7}
+.dx-art-head{font-size:var(--step-3);max-width:24ch;color:#f2f1ec}
+.dx-frames{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-3);margin:var(--s-7) 0}
+.dx-frame{padding:var(--s-5);border:1px solid #3a3e3a;border-radius:var(--radius);background:#111311;color:#f2f1ec;text-align:left;cursor:pointer;font:inherit;min-height:44px}
+.dx-frame[aria-pressed=true]{border-color:#c7ec8b;background:#1a1d1a}
+.dx-frame span{display:block;font:500 .76rem/1.2 var(--font-mono);color:#9ca19b;margin-bottom:var(--s-3);text-transform:uppercase}
+.dx-frame strong{font-size:1.15rem;line-height:1.2;font-weight:560}
+.dx-frame small{display:block;font-size:.9rem;line-height:1.5;color:#b9bdb7;margin-top:var(--s-3)}
+.dx-view{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-7);align-items:center;border-top:1px solid #3a3e3a;padding-top:var(--s-6);min-height:240px}
+.dx-diagram{height:210px;display:grid;place-items:center}
+.dx-diagram svg{max-width:100%;max-height:200px;fill:none;stroke:#e5e5e0;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dx-view h3{color:#f2f1ec}
+.dx-view p{color:#b9bdb7;margin-top:var(--s-3)}
+.dx-art .small{margin-top:var(--s-6);color:#9ca19b}
+.dx-chapter{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--s-5);padding-block:clamp(48px,6vw,96px);border-top:1px solid var(--line)}
+.dx-chapter>div:first-child{grid-column:1/span 4}
+.dx-chapter>div:last-child{grid-column:6/-1}
+.dx-chapter>div:last-child>*+*{margin-top:var(--s-5)}
+.dx-chapter h2{font-size:var(--step-3);max-width:14ch}
+.dx-chapter p,.dx-chapter li{font-size:var(--step-1);line-height:1.6;color:var(--ink-2)}
+.dx-chapter ul{padding-left:1.2em}
+.dx-code{padding:var(--s-5);background:#0a0b0a;color:#f2f1ec;border-radius:var(--radius);overflow:auto;font:400 .88rem/1.7 var(--font-mono);max-width:100%}
+.dx-note{border-left:3px solid var(--accent);padding:var(--s-2) 0 var(--s-2) var(--s-5)}
+.dx-icons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-4)}
+.dx-icon{border:1px solid var(--line);border-radius:var(--radius);padding:var(--s-5);display:grid;gap:var(--s-3);background:var(--bg-raised)}
+.dx-icon svg{width:44px;height:44px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.dx-icon p{font-size:.95rem!important;margin:0}
+.dx-deep{padding-block:clamp(48px,6vw,96px);border-top:1px solid var(--line)}
+.dx-deep h2{font-size:var(--step-3);margin-bottom:var(--s-6)}
+.dx-deep details{border-top:1px solid var(--line)}
+.dx-deep details:last-of-type{border-bottom:1px solid var(--line)}
+.dx-deep summary{padding:var(--s-4) 0;cursor:pointer;font-weight:540}
+.dx-deep details p,.dx-deep details ul{padding-bottom:var(--s-5);color:var(--ink-2);max-width:68ch}
+.dx-deep details ul{padding-left:1.2em}
+@media (max-width:899px){.dx-chapter>div{grid-column:1/-1!important}.dx-chapter>div:last-child{margin-top:var(--s-5)}.dx-view{grid-template-columns:1fr;gap:var(--s-4)}.dx-frames{grid-template-columns:repeat(2,minmax(0,1fr))}.dx-icons{grid-template-columns:1fr}}
+@media (max-width:480px){.dx-frames{grid-template-columns:1fr}}

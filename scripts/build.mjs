@@ -385,18 +385,20 @@ async function write(path, html) {
 }
 
 async function copyLegacy() {
-  // Dexterity Lab prototype pages keep their original styling; only links to
-  // retired routes are rewritten.
+  // The Three.js prototype is a full-screen app and keeps its own dark chrome;
+  // its top bar is rebranded and its links point at current routes.
   await cp(join(ROOT, 'legacy/assets'), join(OUT, 'assets'), { recursive: true });
-  await cp(join(ROOT, 'src/static/mj-monogram.svg'), join(OUT, 'assets/mj-monogram.svg'));
-  const files = ['lab/dexterity-lab/index.html', 'lab/dexterity-lab/case-study/index.html'];
-  for (const f of files) {
-    let html = await readFile(join(ROOT, 'legacy', f), 'utf8');
-    html = html.replaceAll('/notebook/dexterity-lab/', '/lab/dexterity-lab/').replaceAll('href="/notebook/"', 'href="/lab/"')
-      .replace('</head>', '<style>main *{min-width:0}pre{max-width:100%;overflow-x:auto}</style></head>');
-    await mkdir(dirname(join(OUT, f)), { recursive: true });
-    await writeFile(join(OUT, f), html);
-  }
+  const f = 'lab/dexterity-lab/index.html';
+  let html = await readFile(join(ROOT, 'legacy', f), 'utf8');
+  html = html
+    .replace(/<header class="labtop">[\s\S]*?<\/header>/, `<a class="skip-proto" href="#lab-canvas">Skip to prototype</a><header class="labtop"><a href="/lab/">← Lab</a><div class="labtitle">Dexterity Lab <span>/ procedural motion study</span></div><a href="/lab/dexterity-lab/case-study/">Read the write-up →</a></header>`)
+    .replace(/<title>[^<]*<\/title>/, '<title>Dexterity Lab — procedural motion study — Melvin Jayson Ogbalu</title>')
+    .replace(/content="K3 Embody Dexterity Lab:/, 'content="Dexterity Lab:')
+    .replaceAll('/notebook/dexterity-lab/', '/lab/dexterity-lab/').replaceAll('href="/notebook/"', 'href="/lab/"')
+    .replace('Return to the Design Engineering Lab ↗', 'Return to the Lab')
+    .replace('</head>', `<link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>@font-face{font-family:"Geist";src:url("/fonts/geist-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}body{font-family:"Geist",system-ui,sans-serif}.labtop a{font-size:14px;color:#e9ebe8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.labtop a:hover{text-decoration:underline}.labtitle{letter-spacing:.02em;font-weight:600}aside .eyebrow{color:#a9baaf!important}.skip-proto{position:absolute;left:8px;top:-60px;background:#fff;color:#000;padding:8px 12px;z-index:9}.skip-proto:focus{top:8px}main *{min-width:0}</style></head>`);
+  await mkdir(dirname(join(OUT, f)), { recursive: true });
+  await writeFile(join(OUT, f), html);
 }
 
 async function main() {
@@ -420,7 +422,7 @@ async function main() {
   await writeFile(cssPath, css);
 
   await copyLegacy();
-  routes.push('/lab/dexterity-lab/', '/lab/dexterity-lab/case-study/');
+  routes.push('/lab/dexterity-lab/');
   for (const [from, to] of REDIRECTS) await write(from, redirectStub(to));
 
   // 404

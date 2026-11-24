@@ -1,6 +1,6 @@
 # Competitive benchmark
 
-Observed 2026-11-23. Method: text and structure captured via web fetch; visual layouts were **not** inspected in a browser for most references (browser access to external sites was unavailable from the build environment). Where an observation comes from a secondary source rather than the site itself, it is marked *(secondary)*.
+Observed 2026-11-23 (expanded 2026-11-24). Method: text and structure captured via web fetch; visual layouts were **not** inspected in a browser for most references (browser access to external sites was unavailable from the build environment). Where an observation comes from a secondary source rather than the site itself, it is marked *(secondary)*.
 
 ## 1. Official hiring guidance (primary sources)
 
@@ -9,11 +9,14 @@ Observed 2026-11-23. Method: text and structure captured via web fetch; visual l
 | Google UX portfolio tips (services.google.com/fh/files/misc/ux_design_portfolio_tips_19.pdf) | 3–5 case studies; end-to-end process; clear user problem and solution; process artefacts (sketches, wireframes, prototypes); specific role and impact; cross-functional collaboration; understandable without the candidate presenting | 4 flagships; summary strip states role on every case; TL;DR makes each case self-explanatory. **Gap:** real process artefacts. |
 | Google Senior UX Designer postings (2026) | 6 years interaction design; interactive prototypes and journeys; communicate design rationale; AI tools or AI-powered features; technical prototyping (HTML/CSS/JS) for some teams; translating AI reasoning and multi-step workflows into trustworthy interfaces (Cloud AI) | Decisions-with-trade-offs format; Lab and X-hunt show code prototyping; ViiV and X-hunt show AI boundary design. |
 | Meta Product Designer postings | Shipping multiple broad, ambiguous end-to-end features; prototyping; representing work to executives; for senior levels, "end-to-end ownership of complex, multi-surface product experiences" (Instagram) | Fidelity (led, delivered) and X-hunt (live) carry ownership. **Gap:** shipped consumer-scale surfaces and experiment results. |
+| Microsoft (Microsoft AI, London; Principal Designer, AI Experience, UK) | Health AI principal role asks for end-to-end experiences and a portfolio link; AI Experience principal role asks for systems-level craft across interconnected components and end-to-end case studies of agentic systems (designproject.io summary, third-party) | Lead with Fidelity and X-hunt; Microsoft roles reward systems-level, multi-component evidence over isolated screens |
+| Meta London, Monitoring & Observability (Data Infrastructure) | Help engineers improve reliability through operational data; full range of product, interaction and visual skills | Direct match for the YouTube ML-ops reframing story — worth a targeted application |
 | Anthropic Product Designer postings | 8+ years; complex workflows, B2B/dev tools; prototyping with front-end code; shipping in ambiguous environments; partnering with engineering and research without fixed lanes | Strong fit for the code-prototyping and human–AI narrative; years-of-experience threshold should be checked per role. |
 
 ## 2. Third-party hiring commentary (not official)
 
 - A widely shared hiring-manager post (LinkedIn, 2026, reposted by many designers) asks for 2–4 strongest cases on the homepage, one click to a real case, output and impact first, scannable structure, and states that vague roles ("we did…"), missing outcomes and polished screens without decisions are reasons to reject. At Staff level it expects at least one case that "clearly moved a meaningful business metric".
+- A widely shared 2026 LinkedIn post (David Hildebrand) warns enterprise designers against leading with AI chatbot case studies, because chat is rarely the centre of gravity for enterprise product teams. The rebuild leads with workflows and boundaries, not chat UIs.
 - NN/g's survey of 200+ hiring managers emphasises scannability and that full portfolios are rarely read word for word.
 - Interview accounts for Google product design describe the portfolio review as "not a showcase, it is an interview", probing personal ownership and trade-offs (interviewquery.com, third-party).
 
@@ -30,8 +33,9 @@ Observed 2026-11-23. Method: text and structure captured via web fetch; visual l
 | 7 | Rauno Freiberg *(secondary)* | rauno.me | Staff Design Engineer, Vercel; OS-style site | Interaction craft is the proof | Not a model for case-study structure | Craft details matter, but recruiters still need a case path |
 | 8 | Brian Lovin *(secondary)* | brianlovin.com | Notion designer; code-first prototyping | Site as product (web-app structure) | — | Supports "portfolio is a product too" framing in the Lab |
 | 9 | Elvin Hu *(secondary)* | — | Senior Product/UX designer at Google, generative AI in Chrome | Minimal serif layout | — | Restraint reads as senior |
+| 10 | Frances Liddell-Rodriguez | francesliddell.com | Principal/Lead product designer, design systems at Meta, Twitter and others (title differs between headline and metadata) | "What to expect from me as a design partner" section; testimonials labelled by relationship (manager, colleague, mentee); résumé in nav | Homepage cards show company and title only — no role, scope or outcome; inconsistent titles | **Labelled testimonials** are a credible add — real ADPList reviews could fill this, with permission |
 
-Fewer than the 12–15 portfolios requested were inspected in depth; references 7–9 are secondary descriptions. Recommended follow-up: a 30-minute visual review of 5 more senior/staff portfolios on desktop and mobile before production release.
+Ten references were reviewed (fewer than the 12–15 requested); references 7–9 are secondary descriptions. Several further searches for named senior and staff portfolios returned job boards and profiles rather than personal sites. Recommended follow-up: a 30-minute visual review of 5 more senior/staff portfolios on desktop and mobile before production release.
 
 ## 4. Patterns adopted
 

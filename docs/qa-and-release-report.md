@@ -12,6 +12,7 @@ Branch `feat/senior-product-design-portfolio` · 2026-11-23 · Preview: `melvin-
 | Horizontal overflow | Playwright, `scrollWidth` | All pages × 375/768/1920 × light/dark | Pass (legacy Dexterity write-up fixed with a scoped style) |
 | Keyboard | Playwright | Home | Skip link first; logical order through nav, theme toggle and CTAs; mobile menu opens with focus on first link and closes on Esc |
 | No-JavaScript | Playwright, JS disabled | Case study | Content visible (reveal disabled), navigation and links work |
+| Dexterity Lab | axe-core | Prototype and write-up, both themes, 390/1440px | 0 violations after fixes (task buttons now expose `aria-pressed`; contrast; focusable code block). Write-up migrated to the design system; prototype rebranded from "K3 Embody" to "Dexterity Lab" with the external reference credited |
 | Internal links | Static crawl of `dist/` | All HTML | 0 broken |
 | Preview deployment | Vercel | `/work/x-hunt/` 200, unknown route → custom 404, `/notebook/` → `/lab/`, `/api/contact` GET → 405 | Pass |
 | Résumé PDF | Chrome print, `pdftotext` | A4, 2 pages | Text-selectable (ATS-readable), no images |
@@ -22,8 +23,7 @@ Branch `feat/senior-product-design-portfolio` · 2026-11-23 · Preview: `melvin-
 - **Field Core Web Vitals** — no field data exists for the new build. Lighthouse ran against a local, uncompressed server, not the Vercel preview (the build environment cannot reach vercel.app directly).
 - **Contact form delivery** — the preview project has no `RESEND_API_KEY`, so submissions return a 503 with the email fallback. The API now accepts the deployment's own origin via `VERCEL_URL`.
 - **Portrait image** is served from Vercel Blob and could not be loaded in the build sandbox; verify it renders on the preview.
-- **Dexterity Lab pages** keep their legacy styling and header; they were not migrated to the new design system.
-- `/notebook/` is served by a meta-refresh stub on the preview rather than a 301; deep `/notebook/...` paths use the `vercel.json` redirect.
+- The Three.js prototype loads Three.js from the jsDelivr CDN; it could not render in the build sandbox and should be checked on the preview.
 
 ## Simulated recruiter review (internal, not external feedback)
 

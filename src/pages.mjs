@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 // Secondary pages. Helpers are injected by scripts/build.mjs to avoid a circular import.
 export function pages(h) {
   const { page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, FLAGSHIPS } = h;
@@ -239,6 +240,14 @@ export function pages(h) {
     </div>
   </div>
 </section>`
+  });
+
+  // ---------------- Dexterity Lab write-up ----------------
+  add('/lab/dexterity-lab/case-study/', {
+    title: 'Dexterity Lab — making procedural movement understandable',
+    type: 'article',
+    description: 'A Three.js procedural motion study: task selection, time controls and feedback that make a scripted 3D sequence inspectable, with its limits stated.',
+    body: `<div class="wrap" style="padding-top:48px"><p class="breadcrumb" style="margin:0"><a href="/lab/">Lab</a> / Dexterity Lab</p></div>` + readFileSync(new URL('./content/dexterity-case-study.html', import.meta.url), 'utf8')
   });
 
   return out;
