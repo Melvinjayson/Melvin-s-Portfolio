@@ -79,27 +79,6 @@ export function pages(h) {
   </div>
 </section>
 
-<section class="section" aria-labelledby="icons-title">
-  <div class="wrap">
-    <div class="section-head"><div><p class="kicker">Experiment 02 · Visual language</p><h2 id="icons-title">An icon grammar for <span class="serif">invisible</span> processes.</h2></div>
-    <p>Icon libraries depict objects. Intelligent products also need to show things people cannot see — inference, confidence, delay, handoff and verification. Change the symbol and its tokens to see how such a language might begin.</p></div>
-    <div class="icon-lab" data-icon-lab>
-      <div class="stage" data-stage aria-live="polite"></div>
-      <div class="controls">
-        <div><p class="eyebrow eyebrow--plain" style="margin-bottom:8px">Concept</p><div class="seg" role="group" aria-label="Choose a concept">
-          ${['inference', 'confidence', 'latency', 'handoff', 'verification'].map((k, i) => `<button type="button" data-symbol="${k}" aria-pressed="${i === 0}">${k[0].toUpperCase() + k.slice(1)}</button>`).join('')}
-        </div></div>
-        <div><h3 data-name style="font-size:1.6rem">Inference</h3><p class="muted mt-4" data-note></p></div>
-        <div class="field"><label for="icon-size">Size token <span class="mono muted" data-size-out></span></label><input id="icon-size" type="range" min="16" max="160" value="96" data-size></div>
-        <div class="field"><label for="icon-stroke">Stroke token <span class="mono muted" data-stroke-out></span></label><input id="icon-stroke" type="range" min="1" max="8" step=".5" value="4" data-stroke></div>
-        <div><button class="btn btn--ghost" type="button" data-copy>Copy SVG markup</button></div>
-      </div>
-    </div>
-    <details class="disclosure mt-6"><summary>Where do engineering decisions appear?</summary><div><p>Each concept is a single 24-unit SVG geometry, separated from presentation tokens. Stroke is compensated for size so optical weight stays consistent. Size and stroke are controls rather than separate drawings, which makes the system repeatable and easy to extend.</p></div></details>
-    <details class="disclosure"><summary>What remains unproven?</summary><div><p>Recognition at 16–24 px, cultural interpretation, semantic clarity across contexts, and whether any symbol can honestly represent model behaviour. These are research questions, not assumed successes; each metaphor would need testing before use in a consequential interface.</p></div></details>
-  </div>
-</section>
-
 <section class="section" aria-labelledby="aura-title">
   <div class="wrap">
     <div class="section-head"><div><p class="kicker">From my own products</p><h2 id="aura-title">Judgement, made <span class="serif">visible.</span></h2></div><p>Design questions from X-hunt and Aura that sit between interface and system.</p></div>
