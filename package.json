@@ -1,0 +1,11 @@
+{
+  "name": "melvin-jayson-portfolio",
+  "private": true,
+  "type": "module",
+  "description": "Portfolio of Melvin Jayson Ogbalu — zero-dependency static build.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/build.mjs && cd dist && python3 -m http.server 8080"
+  },
+  "engines": { "node": ">=20" }
+}

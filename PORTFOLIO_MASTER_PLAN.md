@@ -65,5 +65,9 @@ P1 Breadth: ventures, sustainability, about, writing and notebook.
 P1 Polish: visual direction, diagrams, meaningful motion, accessibility and performance.
 P0 release gate: inspect 320/375/390/768/1024/1440 widths; keyboard use; alt text; performance; page metadata; asset licences; working links; 200 responses across all routes; GitHub/Vercel production deployment.
 
-## Current status
-The old live site has received the directional icon cleanup (commit d2600f0). A separate complete multi-page static prototype including supplied photos and eight public-safe case-study pages has been produced as a downloadable ZIP in this conversation. Its contents are NOT YET integrated into or deployed from this GitHub repo. The ZIP is a strong structural foundation, not final verified client-evidence-quality case studies.
+## Current status (2026-11-23)
+The site has been rebuilt on branch `feat/senior-product-design-portfolio` as a zero-dependency static build (`scripts/build.mjs`, content in `src/data.mjs`). Positioning moved from a multidisciplinary showcase to senior product design for complex, intelligent systems. Flagships: Fidelity Bank, X-hunt, ViiV Healthcare, YouTube; supporting: Mater Private, Department of Justice, AICPA & CIMA, Kerry Group, defence-related proposal. Navigation reduced to Work · About · Lab · Writing · Résumé. Every outcome carries an evidence label.
+
+Superseded from this plan: the Manrope/DM Sans type pairing (now Geist, Geist Mono, Instrument Serif italic) and the homepage photography placement (portrait now on About only). See `docs/design-system.md` and `docs/portfolio-information-architecture.md`.
+
+The largest remaining gap is unchanged: approved product artefacts and documented outcome evidence for client work. No case study meets the >=80 bar in the review standard above without them.

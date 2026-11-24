@@ -1,4 +1,4 @@
-const ALLOWED_SERVICES = new Set(['General enquiry','Discovery call','UX Bridge needs analysis','UX & product audit','AI-UX workflow workshop','Design strategy sprint','Product architecture advisory','Mentorship and speaking']);
+const ALLOWED_SERVICES = new Set(['Hiring conversation','General enquiry','Discovery call','UX Bridge needs analysis','UX & product audit','AI-UX workflow workshop','Design strategy sprint','Product architecture advisory','Mentorship and speaking']);
 const trim=(v,max=200)=>typeof v==='string'?v.trim().slice(0,max):'';
 const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)&&v.length<=254;
 export default async function handler(req,res){
@@ -8,7 +8,7 @@ export default async function handler(req,res){
   res.setHeader('Allow','POST');
   if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'});
   const origin=req.headers.origin||'';
-  if(origin){try{const url=new URL(origin);if(url.protocol!=='https:'||!['melvinogbalu.com','www.melvinogbalu.com','melvins-portfolio.vercel.app'].includes(url.hostname)){return res.status(403).json({error:'Submission origin not permitted'})}}catch{return res.status(403).json({error:'Invalid origin'})}}
+  if(origin){try{const url=new URL(origin);const allowed=['melvinogbalu.com','www.melvinogbalu.com','melvins-portfolio.vercel.app',process.env.VERCEL_URL,process.env.VERCEL_BRANCH_URL].filter(Boolean);if(url.protocol!=='https:'||!allowed.includes(url.hostname)){return res.status(403).json({error:'Submission origin not permitted'})}}catch{return res.status(403).json({error:'Invalid origin'})}}
   const body=typeof req.body==='object'&&req.body?req.body:{};
   if(trim(body.website,100))return res.status(200).json({ok:true});
   const created=Number(body.startedAt||0);
