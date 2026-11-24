@@ -31,6 +31,7 @@ export const NAV = [
 export const EVIDENCE = {
   observed: { label: 'Observable', desc: 'Visible in a live, public product today.' },
   reported: { label: 'Self-reported', desc: 'Reported from the project; baseline or attribution not published.' },
+  codebase: { label: 'In the repository', desc: 'Recorded in the product’s private source repository — test results, decision records or research files. Available to walk through on request.' },
   concept: { label: 'Concept stage', desc: 'Proposed or explored direction; not deployed.' },
   none: { label: 'Not measured', desc: 'No outcome data available to publish.' }
 };
@@ -40,7 +41,97 @@ export const EVIDENCE = {
 // ---------------------------------------------------------------------------
 export const FLAGSHIPS = [
   {
+    slug: 'x-hunt',
+    status: 'Live pilot · 2026 · Co-founder',
+    thumb: { src: '/img/x-hunt/brief', w: 1152, h: 662, alt: '' },
+    gallery: [
+      { src: '/img/x-hunt/step1', w: 672, h: 362, alt: 'A card headed “You write” with the sentence “UX research in Dublin; I’d like to mentor education projects.” Below it, four tags read from the sentence: UX research, Mentoring, Education, Dublin.', caption: 'The individual entry point. One sentence, read into tags the person can see and remove — not a CV or a membership form.' },
+      { src: '/img/x-hunt/find', w: 1152, h: 690, alt: 'A discovery screen. The search “someone who knows data analysis for climate work” is read as two removable filters, Data analysis and Climate and environment. Two opportunities follow, each labelled with who can see it: community only, or open to other communities.', caption: 'Plain-language search. The interpretation is shown as removable filters, and every result says who it is visible to.' },
+      { src: '/img/x-hunt/brief', w: 1152, h: 662, alt: 'A shared brief being edited by two people. Beside it, two assistant cards marked Draft: a wording suggestion with Accept and Dismiss buttons, and a catch-up summary that cites its source.', caption: 'The assistant’s boundary, made visible. Suggestions are labelled drafts with Accept and Dismiss; summaries cite their source.' },
+      { src: '/img/x-hunt/moderator-tools', w: 1152, h: 502, alt: 'A moderator view listing three members with their skills and causes, under the line “Shared with moderators · each view is recorded in the audit log”.', caption: 'Moderator tools show only what members chose to share with moderators, and say that each view is logged.' },
+      { src: '/img/x-hunt/ledger', w: 984, h: 402, alt: 'A list headed “Your choices, recorded”, marked append-only, with four dated entries such as “Sharing setting · skills → my communities” and “Invitation · no”.', caption: 'An append-only record of a person’s own sharing choices — the trust model as something they can inspect.' }
+    ],
+    galleryNote: 'Illustrations from xhunt.app’s public landing page, rendered from the product’s own interface components and theme tokens. People, communities and content are fictional. Shown in the current theme.',
+    org: 'X-hunt',
+    title: 'Designing an AI-assisted network where people stay in control',
+    card: 'Co-founded and lead product on a live, privacy-first platform connecting people who want to help with communities that need them. The assistant drafts; people decide.',
+    domain: 'Zero-to-one · Human–AI trust',
+    capability: 'Product building',
+    summary: [
+      ['Role', 'Co-founder & product lead — research, product definition, design and build'],
+      ['Engagement', 'Independent venture'],
+      ['Status', 'Live pilot with a small number of communities'],
+      ['Stack', 'Next.js, TypeScript, Supabase']
+    ],
+    maturity: 'observed',
+    link: { href: 'https://www.xhunt.app/', label: 'Visit xhunt.app' },
+    tldr: [
+      ['Problem', 'People with useful skills rarely get asked to help; community organisations struggle to make needs visible and to coordinate contributors without exposing anyone.'],
+      ['What I did', 'Defined the product from research, designed the consent architecture and the assistant’s boundaries, and lead the build of a production web app.'],
+      ['Outcome', 'Live and in pilot. Privacy-by-default, double opt-in introductions and a bounded assistant are all observable in the product today. Adoption metrics are not yet published.']
+    ],
+    lede: 'X-hunt began with a practical observation: plenty of people would happily give a few hours to the right thing, but they are rarely asked — and asking or being asked can feel risky. The product is built around the reasons good people hold back.',
+    chapters: [
+      ['The problem', 'Willingness to contribute is not the bottleneck. Trust is.', [
+        'My research — stakeholder conversations, surveys, empathy mapping and iterative concept testing — looked at both sides: individuals who want to contribute, and community organisations trying to coordinate them. Participation depended on more than matching skills. <strong>Trust, motivation, time, accessibility, belonging and recognition</strong> decided whether someone took part and came back.',
+        'Two things recurred: people did not want to be chased, and they did not want their details passed around.'
+      ]],
+      ['The direction', 'Contribution, not community, is the way in.', [
+        'A person with no affiliation should be able to start from what they want to contribute to. The product therefore has two entry points — individual-led and community-led — and the individual path starts with a single sentence rather than a CV or a membership.',
+        'From there, every design choice protects agency: nothing is shared until the person chooses, introductions need two yeses, and the AI assistant has hard limits on what it may do.'
+      ]],
+      ['Building it', 'Design decisions that have to survive production.', [
+        'I lead the product build as well as its design, working with AI coding agents under my direction; most commits in the repository are co-authored with them. That makes the guard-rails the real design work: decision records for authentication, tenant isolation, the AI gateway, design tokens and motion, and an acceptance suite that has to pass before anything ships.',
+        'Taking an early codebase towards production meant consolidating surfaces, hardening authentication and replacing hard-coded colour values with a design-token system whose contrast rules are written down as a decision record.',
+        'The acceptance suite is the clearest evidence of the AI boundary. On 23 October 2026 it passed 33 of 33 checks against a production build — with the AI provider switched off. Catch-up summaries, wording suggestions and plain-language search all have rule-based paths, so the product still works when there is no model.',
+        'Research is written to be argued with. The landing-page study states its hypotheses, grades each source, lists counterevidence (incumbents exist; stated willingness is not behaviour) and ends with a rule: the page may not promise a feature the product does not have.',
+        'The pilot is deliberately small. The next stage is measuring whether the trust model works: whether people complete the first sentence, open sharing to their communities, and say yes to a first opportunity.'
+      ]]
+    ],
+    ownership: {
+      owned: ['Product definition and requirements', 'Consent architecture and privacy model', 'Assistant behaviour and limits', 'Interface design, design tokens and motion', 'Direction of the build, decision records and acceptance criteria'],
+      influenced: ['Pilot design with partner communities', 'Technical architecture decisions', 'AI use policy'],
+      team: ['Co-founder partnership', 'Pilot communities and stewards', 'AI coding agents, working to the repository’s rules']
+    },
+    decisions: [
+      {
+        title: 'Private by default, shared field by field',
+        why: 'Fear of exposure was a reason people held back. Every part of a profile starts as “Only me”, and the person opens it up piece by piece.',
+        alt: 'A public profile with privacy settings to opt out of.',
+        tradeoff: 'Less data visible to communities at first; much lower risk of the first interaction feeling unsafe.'
+      },
+      {
+        title: 'Introductions need two yeses; no is silent',
+        why: 'Being asked should not feel risky. Neither person sees the other until both agree, and declining sends no signal.',
+        alt: 'Direct messaging or one-sided requests.',
+        tradeoff: 'Slower first connection; no pressure or social cost attached to saying no.'
+      },
+      {
+        title: 'The assistant drafts — it never introduces, ranks or decides',
+        why: 'AI is useful for turning a sentence into a draft or a search into filters. It is not appropriate for judging people. Its output is labelled and editable; it can be paused, and the product works on simple rules without a model.',
+        alt: 'AI-driven matching and recommendations.',
+        tradeoff: 'Gives up algorithmic matching as a growth lever, in exchange for an explicit, explainable boundary on automation.'
+      },
+      {
+        title: 'No rankings; aggregate only with three or more people',
+        why: 'Scores and leaderboards would change why people contribute. Communities see totals only when three or more people choose to share.',
+        alt: 'Leaderboards and individual contribution scores.',
+        tradeoff: 'Less gamification; recognition that does not expose individuals.'
+      }
+    ],
+    outcomes: [
+      ['Product status', 'Live, in a pilot with a small number of communities (xhunt.app, November 2026)', 'observed'],
+      ['Trust model', 'Private-by-default profiles, double opt-in introductions and an append-only record of sharing choices are live', 'observed'],
+      ['Acceptance testing', '33 of 33 end-to-end checks passed on a production build, three consecutive runs, AI provider off (23 October 2026)', 'codebase'],
+      ['Architecture decisions', 'Eight accepted decision records and one proposed, including “One AI gateway, rules first”, tenant isolation and design tokens', 'codebase'],
+      ['Adoption and activation', 'Not yet measured publicly; pilot instrumentation counts broad page groups only, with consent', 'none']
+    ],
+    reflection: 'Designing the boundaries of an AI feature is a product decision, not a disclaimer. What the assistant refuses to do is as much a part of the experience as what it does.',
+    next: 'The test of the design is behavioural: whether a person who arrives with one sentence ends up contributing — and whether communities trust the product enough to bring their members.'
+  },
+  {
     slug: 'fidelity-bank',
+    status: 'Delivered · 2021–22 · Design lead',
     org: 'Fidelity Bank',
     title: 'A better banking app needed a better bridge behind it',
     card: 'Led the design and engineering team redesigning retail and corporate digital banking — and the internal tools customers never see but always feel.',
@@ -103,81 +194,8 @@ export const FLAGSHIPS = [
     next: 'If I were to start again, I would agree the measurement plan — baseline, period and attribution — with leadership on day one, so the outcome story is as strong as the delivery story.'
   },
   {
-    slug: 'x-hunt',
-    org: 'X-hunt',
-    title: 'Designing an AI-assisted network where people stay in control',
-    card: 'Co-founded and lead product on a live, privacy-first platform connecting people who want to help with communities that need them. The assistant drafts; people decide.',
-    domain: 'Zero-to-one · Human–AI trust',
-    capability: 'Product building',
-    summary: [
-      ['Role', 'Co-founder & product lead — research, product definition, design and build'],
-      ['Engagement', 'Independent venture'],
-      ['Status', 'Live pilot with a small number of communities'],
-      ['Stack', 'Next.js, TypeScript, Supabase']
-    ],
-    maturity: 'observed',
-    link: { href: 'https://www.xhunt.app/', label: 'Visit xhunt.app' },
-    tldr: [
-      ['Problem', 'People with useful skills rarely get asked to help; community organisations struggle to make needs visible and to coordinate contributors without exposing anyone.'],
-      ['What I did', 'Defined the product from research, designed the consent architecture and the assistant’s boundaries, and lead the build of a production web app.'],
-      ['Outcome', 'Live and in pilot. Privacy-by-default, double opt-in introductions and a bounded assistant are all observable in the product today. Adoption metrics are not yet published.']
-    ],
-    lede: 'X-hunt began with a practical observation: plenty of people would happily give a few hours to the right thing, but they are rarely asked — and asking or being asked can feel risky. The product is built around the reasons good people hold back.',
-    chapters: [
-      ['The problem', 'Willingness to contribute is not the bottleneck. Trust is.', [
-        'My research — stakeholder conversations, surveys, empathy mapping and iterative concept testing — looked at both sides: individuals who want to contribute, and community organisations trying to coordinate them. Participation depended on more than matching skills. <strong>Trust, motivation, time, accessibility, belonging and recognition</strong> decided whether someone took part and came back.',
-        'Two things recurred: people did not want to be chased, and they did not want their details passed around.'
-      ]],
-      ['The direction', 'Contribution, not community, is the way in.', [
-        'A person with no affiliation should be able to start from what they want to contribute to. The product therefore has two entry points — individual-led and community-led — and the individual path starts with a single sentence rather than a CV or a membership.',
-        'From there, every design choice protects agency: nothing is shared until the person chooses, introductions need two yeses, and the AI assistant has hard limits on what it may do.'
-      ]],
-      ['Building it', 'Design decisions that have to survive production.', [
-        'I lead the product build as well as its design. Taking an early codebase towards production meant consolidating surfaces, hardening authentication and migrating to design tokens — an audit flagged 4,707 hard-coded colour values to replace with a token system.',
-        'The pilot is deliberately small. The next stage is measuring whether the trust model works: whether people complete the first sentence, open sharing to their communities, and say yes to a first opportunity.'
-      ]]
-    ],
-    ownership: {
-      owned: ['Product definition and requirements', 'Consent architecture and privacy model', 'Assistant behaviour and limits', 'Interface design and front-end build'],
-      influenced: ['Pilot design with partner communities', 'Technical architecture decisions', 'AI use policy'],
-      team: ['Co-founder partnership', 'Pilot communities and stewards']
-    },
-    decisions: [
-      {
-        title: 'Private by default, shared field by field',
-        why: 'Fear of exposure was a reason people held back. Every part of a profile starts as “Only me”, and the person opens it up piece by piece.',
-        alt: 'A public profile with privacy settings to opt out of.',
-        tradeoff: 'Less data visible to communities at first; much lower risk of the first interaction feeling unsafe.'
-      },
-      {
-        title: 'Introductions need two yeses; no is silent',
-        why: 'Being asked should not feel risky. Neither person sees the other until both agree, and declining sends no signal.',
-        alt: 'Direct messaging or one-sided requests.',
-        tradeoff: 'Slower first connection; no pressure or social cost attached to saying no.'
-      },
-      {
-        title: 'The assistant drafts — it never introduces, ranks or decides',
-        why: 'AI is useful for turning a sentence into a draft or a search into filters. It is not appropriate for judging people. Its output is labelled and editable; it can be paused, and the product works on simple rules without a model.',
-        alt: 'AI-driven matching and recommendations.',
-        tradeoff: 'Gives up algorithmic matching as a growth lever, in exchange for an explicit, explainable boundary on automation.'
-      },
-      {
-        title: 'No rankings; aggregate only with three or more people',
-        why: 'Scores and leaderboards would change why people contribute. Communities see totals only when three or more people choose to share.',
-        alt: 'Leaderboards and individual contribution scores.',
-        tradeoff: 'Less gamification; recognition that does not expose individuals.'
-      }
-    ],
-    outcomes: [
-      ['Product status', 'Live, in a pilot with a small number of communities (xhunt.app, November 2026)', 'observed'],
-      ['Trust model', 'Private-by-default profiles, double opt-in introductions and an append-only record of sharing choices are live', 'observed'],
-      ['Adoption and activation', 'Not yet measured publicly; pilot instrumentation counts broad page groups only, with consent', 'none']
-    ],
-    reflection: 'Designing the boundaries of an AI feature is a product decision, not a disclaimer. What the assistant refuses to do is as much a part of the experience as what it does.',
-    next: 'The test of the design is behavioural: whether a person who arrives with one sentence ends up contributing — and whether communities trust the product enough to bring their members.'
-  },
-  {
     slug: 'viiv-healthcare',
+    status: 'Concept · Accenture Song',
     org: 'ViiV Healthcare',
     title: 'Getting expert knowledge to the frontline without losing its meaning',
     card: 'Explored an AI-assisted workflow that turns expert-reviewed HIV research into usable learning formats — with automation placed between expert gates, never instead of them.',
@@ -234,6 +252,7 @@ export const FLAGSHIPS = [
   },
   {
     slug: 'youtube-ml',
+    status: 'Research · Accenture Song',
     org: 'YouTube',
     title: 'The brief was analytics. The problem was how teams worked.',
     card: 'Investigated a machine-learning operations platform and reframed a dashboard request into an operational layer for model, release and knowledge coordination.',

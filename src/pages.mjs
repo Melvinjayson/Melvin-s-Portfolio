@@ -108,6 +108,14 @@ export function pages(h) {
       <a class="tile" href="/ventures/"><p class="eyebrow eyebrow--plain">Aura · In development</p><h3>What can a person trust?</h3><p>Research, conversations, decision records and next actions in one workspace. Conversation-first navigation and draft review are documented; advanced capabilities remain plans.</p><span class="foot">${ev('concept')}${ARROW}</span></a>
       <a class="tile" href="https://reveta.org" rel="noopener"><p class="eyebrow eyebrow--plain">DataFoundry · Documentation-first</p><h3>Where did this insight come from?</h3><p>Architecture exploring lineage, licensing and governance for shared intelligence. A design direction, not a launched marketplace.</p><span class="foot">${ev('concept')}${EXT}</span></a>
     </div>
+    <div class="aura-study mt-8">
+      <figure class="shot"><div class="shot-frame shot-frame--dark"><img src="/img/aura/composer.webp" width="1640" height="320" alt="Aura’s message composer: a text box reading “Ask Aura anything…”, a Quick / Deliberate mode switch, Talk and microphone buttons, and a footer line: “Aura works inside your workspace. Nothing leaves it yet. Model status unverified.”" loading="lazy" decoding="async"></div><figcaption>Aura’s composer, captured from a local development build. In development; not a launched product.</figcaption></figure>
+      <div class="aura-notes">
+        <h3>Aura: judgement made visible</h3>
+        <p>The composer offers two modes. <strong>Deliberate</strong> is also switched on automatically when sources look unreliable — invalid or future dates, duplicates, unsafe URL forms — and the reply must then name its limitations and a verification step. The footer says what is true today: nothing leaves the workspace, and the model’s status is unverified.</p>
+        <p>The pilot is written to be falsified: at least a 25% cut in median handling time across three tasks, at least 90% of material claims backed by an original source, and every external message kept as a draft. Any cross-workspace exposure stops it.</p>
+      </div>
+    </div>
   </div>
 </section>
 
