@@ -1,6 +1,27 @@
 # QA and release report
 
-Branch `feat/senior-product-design-portfolio` · updated 2026-11-24 (phase 2) · Preview: `melvin-portfolio-preview` (separate Vercel project; the existing production site is untouched).
+Branch `feat/senior-product-design-portfolio` · updated 2026-11-24 (final audit) · Preview: `melvin-portfolio-preview` (separate Vercel project; the existing production site is untouched).
+
+## Final audit checks (24 Nov 2026, commit after `e230780`)
+
+Run against the latest source, which includes the creative redesign, the removal of the visual-language experiment and the new photography. A static server on localhost was used; Lighthouse simulates mobile throttling against uncompressed files.
+
+| Check | Scope | Result |
+|---|---|---|
+| Build | 21 pages + sitemap, robots, 404, redirect stubs | Pass |
+| Accessibility (axe-core, WCAG 2.0/2.1/2.2 A–AA + best practice) | 21 pages + Dexterity prototype × light/dark × 390/1440 | **0 violations** |
+| Horizontal overflow | All pages × 320/375/390/768/1024/1440/1920/2560 × light/dark (336 checks) | 0 overflow |
+| Lighthouse (mobile) | `/` · `/work/x-hunt/` · `/about/` · `/lab/` · `/writing/` | Performance 100 · 97 · 100 · 100 · 99; Accessibility 100 on all; SEO 100 on all; Best practices 100 except About at 96. LCP 1.05–2.55 s, CLS ≤ 0.001. The About score comes from the portrait failing to load in the sandbox (external blob storage is blocked there); the X-hunt LCP is the cover collage image |
+| Motion | Intro, theme switch, page transition, menu, disclosure, reduced motion | Intro runs once per session; the theme change is a root view transition; `view-transition-name` is unique on every page; the menu animates and closes on Esc; reduced motion has no intro and no theme animations |
+| Keyboard | Home | Skip link first; logical order; menu focus and Esc work |
+| No-JavaScript | Case study | Content visible |
+| Dexterity prototype | 1440 and 390, SwiftShader WebGL | Play/pause, ±1 s, scrub, restart, speed, all four cameras, all three tasks (`aria-pressed` updates), operations, object diagram and drag orbit all work; no console errors. On mobile, the playbar now sits directly under the scene |
+| Internal links | Static crawl | 0 broken |
+| Résumé PDF | `/resume/melvin-jayson-ogbalu-resume.pdf` | A4, 2 pages, text-selectable |
+| SEO | Sitemap, robots, canonical, social preview | Present. Canonical and sitemap use `SITE_URL` (default `melvins-portfolio.vercel.app`) and must be set to the production domain. The Lab pages use the Dexterity social image with its AI-generated label as the alt text |
+| Dependencies | `package.json` | No runtime or build dependencies (zero-dependency build), so there is nothing to audit. Three.js 0.169.0 is vendored with its licence |
+
+**Not done here:** real iPhone/Android devices, Safari and Firefox engines, VoiceOver/NVDA/TalkBack, field Core Web Vitals, and live contact-form delivery (the preview has no email API key, so the form falls back to email).
 
 ## Executed checks (phase 2, 24 Nov 2026)
 
