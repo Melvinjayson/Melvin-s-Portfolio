@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { SITE, NAV, EVIDENCE, FLAGSHIPS, SUPPORTING, EXPERIENCE, INDEPENDENT, WRITING, VENTURES } from '../src/data.mjs';
 import { diagrams } from '../src/diagrams.mjs';
 import { pages as extraPages } from '../src/pages.mjs';
+import { icon, ICONS } from '../src/icons.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist');
@@ -16,12 +17,12 @@ const BUILT = new Date().toISOString().slice(0, 10);
 
 // ---------- helpers ----------
 export const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-export const ARROW = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-export const EXT = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+export const ARROW = icon('arrow-right');
+export const EXT = icon('arrow-up-right');
 export const ev = (k) => `<span class="ev ev--${k}">${esc(EVIDENCE[k].label)}</span>`;
 const MARK = `<svg viewBox="0 0 310 310" aria-hidden="true" focusable="false"><rect class="mark-bg" width="310" height="310" rx="64"/><g class="mark-fg" transform="translate(31 31) scale(.8)"><path d="M26 71 26 228 56 244 56 122 72 128 147 169 151 169 176 154 176 122 148 138Z"/><path d="M279 67 224 97 224 129 247 116 250 117 250 243 279 227Z"/><path d="M159 24 144 30 90 61 121 77 157 56 185 73 185 245 150 266 120 249 119 185 89 170 89 263 149 298 215 261 215 57Z"/></g></svg>`;
-const SUN = '<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-const MOON = '<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+const SUN = icon('sun', 20, 'i-sun');
+const MOON = icon('moon', 20, 'i-moon');
 
 const extLink = (href, text, cls = 'arrow-link') => `<a class="${cls}" href="${esc(href)}" rel="noopener">${text} ${EXT}</a>`;
 
@@ -92,7 +93,8 @@ function footer({ cta = true } = {}) {
       <div><h2>Elsewhere</h2><ul><li><a href="${SITE.linkedin}" rel="noopener">LinkedIn</a></li><li><a href="${SITE.github}" rel="noopener">GitHub</a></li><li><a href="${SITE.medium}" rel="noopener">Medium</a></li><li><a href="/writing/">Writing</a></li></ul></div>
       <div><h2>Contact</h2><ul><li><a href="mailto:${SITE.email}">Email</a></li><li><a href="/contact/">Message form</a></li><li><a href="/resume/">Résumé (web &amp; PDF)</a></li></ul></div>
     </div>
-    <div class="colophon"><span>© ${new Date().getFullYear()} ${esc(SITE.name)} · ${esc(SITE.location)}</span><span>Client names describe engagements, not endorsements.</span></div>
+    <p class="footer-mark" aria-hidden="true">Melvin Jayson <span class="serif">Ogbalu</span></p>
+    <div class="colophon"><span>© ${new Date().getFullYear()} · Product designer, ${esc(SITE.location)}</span><span>Organisation names describe engagements, not endorsements.</span></div>
   </div>
 </footer>
 <script src="/js/site.js?v=${BUILT}" defer></script>
@@ -153,13 +155,19 @@ export const pic = (base, w, h, alt, widths, sizes = '100vw', eager = false) => 
 export const DEX = { base: '/img/lab/dexterity-concept', w: 1440, h: 810, alt: 'Concept image of a white robotic arm whose five-fingered hand lifts a small wooden block above a cluster of blocks.', label: 'AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype.' };
 export const dexCover = (eager = false, sizes = '100vw') => pic(DEX.base, DEX.w, DEX.h, DEX.alt, [800, 1440], sizes, eager);
 
-// Organisations, set in type. A supplied SVG at src/static/img/clients/<slug>.svg replaces the name.
-const ORGS = [
-  ['accenture-song', 'Accenture Song'], ['fidelity-bank', 'Fidelity Bank'], ['youtube', 'YouTube'], ['viiv-healthcare', 'ViiV Healthcare'],
-  ['mater-private', 'Mater Private'], ['aicpa-cima', 'AICPA & CIMA'], ['kerry-group', 'Kerry Group']
+// Organisations, grouped by relationship and set in type. An approved SVG at
+// src/static/img/clients/<slug>.svg replaces a name (greyscale, optically sized via --logo-h).
+const ORG_GROUPS = [
+  ['Employers', [['accenture-song', 'Accenture Song'], ['fidelity-bank', 'Fidelity Bank']]],
+  ['Client engagements through Accenture Song', [['youtube', 'YouTube'], ['viiv-healthcare', 'ViiV Healthcare'], ['mater-private', 'Mater Private'], ['aicpa-cima', 'AICPA & CIMA'], ['kerry-group', 'Kerry Group']]],
+  ['Ventures', [['x-hunt', 'X-hunt'], ['reveta', 'Reveta']]]
 ];
 const orgMark = ([slug, name]) => existsSync(new URL(`../src/static/img/clients/${slug}.svg`, import.meta.url))
-  ? `<li><img src="/img/clients/${slug}.svg" alt="${esc(name)}" height="28" loading="lazy"></li>` : `<li>${esc(name)}</li>`;
+  ? `<li><img src="/img/clients/${slug}.svg" alt="${esc(name)}" loading="lazy"></li>` : `<li>${esc(name)}</li>`;
+const orgsBlock = () => `<section class="orgs wrap" aria-labelledby="orgs-title">
+  <h2 id="orgs-title" class="visually-hidden">Organisations</h2>
+  <div class="org-groups">${ORG_GROUPS.map(([g, list]) => `<div class="org-group"><p class="org-kind">${esc(g)}</p><ul class="org-list">${list.map(orgMark).join('')}</ul></div>`).join('')}</div>
+</section>`;
 
 // ---------- pages ----------
 const personLd = {
@@ -184,11 +192,7 @@ function home() {
   </div>
 </section>
 
-<section class="orgs wrap" aria-labelledby="orgs-title">
-  <h2 id="orgs-title" class="orgs-title">Organisations I have designed for</h2>
-  <ul class="org-list">${ORGS.map(orgMark).join('')}</ul>
-  <p class="orgs-note">Client work through Accenture Song. Names describe engagements, not endorsements.</p>
-</section>
+${orgsBlock()}
 
 <section class="work-features" id="work" aria-labelledby="work-title">
   <div class="wrap">
@@ -351,22 +355,20 @@ function supporting(s) {
   return page({
     path: `/work/${s.slug}/`, title: `${s.org} — ${s.title}`, type: 'article', description: s.problem.slice(0, 155),
     body: `
-<article>
-<header class="case-hero wrap">
+<article class="case case--short">
+<header class="case-cover"><div class="case-hero wrap">
   <p class="crumb"><a href="/work/">Work</a> <span aria-hidden="true">/</span> ${esc(s.org)}</p>
   <h1>${esc(s.title)}</h1>
   <dl class="case-facts"><div><dt>Client</dt><dd>${esc(s.org)}</dd></div><div><dt>Role</dt><dd>${esc(s.role)}</dd></div><div><dt>Status</dt><dd>${esc(QUAL[s.maturity])}</dd></div></dl>
   <p class="small mt-5">A short account. Client screens and internal details are withheld.</p>
-</header>
+</div></header>
 <div class="wrap">
-  <section class="chapter"><header><p class="kicker">The problem</p><h2>Beyond the brief.</h2></header><div class="body"><p>${esc(s.problem)}</p></div></section>
-  <section class="chapter"><header><p class="kicker">My contribution</p><h2>What I worked on.</h2></header><div class="body"><p>${esc(s.work)}</p></div></section>
-  <section class="chapter"><header><p class="kicker">Outcome</p><h2>What can be said.</h2></header><div class="body"><p>${esc(s.outcome[0])}</p><p class="qual">${QUAL[s.outcome[1]]}</p></div></section>
+  <section class="chapter"><header><h2>The problem</h2></header><div class="body"><p>${esc(s.problem)}</p></div></section>
+  <section class="chapter"><header><h2>What I did</h2></header><div class="body"><p>${esc(s.work)}</p></div></section>
+  <section class="chapter"><header><h2>What happened</h2></header><div class="body"><p>${esc(s.outcome[0])}</p><p class="qual">${QUAL[s.outcome[1]]}</p></div></section>
   <section class="closing"><p class="reflection serif">${esc(s.learning)}</p></section>
 </div>
 <a class="next-case" href="/work/"><div class="wrap"><p class="kicker">Back to all work</p><h2>See the selected case studies</h2>${ARROW}</div></a>
-<div>
-</div>
 </article>`
   });
 }
@@ -376,26 +378,27 @@ function resume() {
     path: '/resume/', title: 'Résumé', description: `Résumé of ${SITE.name}, ${SITE.title} at ${SITE.employer}, Dublin.`, cta: false, jsonld: [personLd],
     body: `
 <section class="wrap hero resume">
-  <div class="btn-row no-print" style="margin-bottom:32px"><a class="btn" href="/resume/melvin-jayson-ogbalu-resume.pdf" download>Download PDF ${ARROW}</a><a class="btn btn--ghost" href="mailto:${SITE.email}">Email</a><a class="btn btn--ghost" href="${SITE.linkedin}" rel="noopener">LinkedIn ${EXT}</a></div>
+  <p class="kicker no-print">Résumé</p>
   <h1>${esc(SITE.name)}</h1>
   <p class="lead" style="margin-top:12px">Product designer — complex, AI-enabled and regulated systems</p>
   <p class="contact-line"><span>${esc(SITE.location)}</span><a href="mailto:${SITE.email}">${SITE.email}</a><a href="${SITE.url}">${SITE.url.replace('https://', '')}</a><a href="${SITE.linkedin}">linkedin.com/in/chinedu-melvin-ogbalu</a></p>
+  <div class="btn-row no-print mt-6"><a class="btn" href="/resume/melvin-jayson-ogbalu-resume.pdf" download>Download PDF ${icon('download')}</a><a class="btn btn--ghost" href="mailto:${SITE.email}">Email ${icon('mail')}</a><a class="btn btn--ghost" href="${SITE.linkedin}" rel="noopener">LinkedIn ${EXT}</a></div>
 
   <h2>Summary</h2>
   <p>Product designer with a Computer Science background and experience across digital banking, healthcare, public services, professional membership and machine-learning operations. Led a combined design and engineering team as UX Design Lead at Fidelity Bank; now a UX Design &amp; Strategy Consultant at Accenture Song. Co-founder and product lead of X-hunt, a live, privacy-first contribution network. Known for reframing ambiguous briefs, designing the service behind the interface, and setting clear boundaries for AI in products.</p>
 
   <h2>Experience</h2>
-  ${EXPERIENCE.map((e) => `<div class="job"><div class="mono muted">${e.when}<br>${esc(e.where)}</div><div><h3>${esc(e.role)} · ${esc(e.org)}</h3><p class="muted job-what${e.bullets.length ? ' print-hide' : ''}" style="margin-top:6px">${esc(e.what)}</p>${e.bullets.length ? `<ul>${e.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</div></div>`).join('')}
-  <div class="job"><div class="mono muted">Ongoing<br>Independent</div><div><h3>Co-founder &amp; Product Lead · X-hunt</h3><ul><li>Defined and lead the product: a privacy-first network connecting people who want to help with communities that need them; live in a pilot with a small number of communities.</li><li>Designed the consent architecture (private by default, double opt-in introductions, append-only record of sharing choices) and the AI assistant’s limits (drafts, never introduces, ranks or decides).</li><li>Lead the product build (Next.js, TypeScript, Supabase), including a migration to design tokens.</li></ul></div></div>
-  <div class="job"><div class="mono muted">Ongoing<br>Independent</div><div><h3>Founder · Reveta</h3><ul><li>Venture ecosystem for trustworthy, evidence-led AI products, including Aura (evidence-led workspace) and Landmark AI (property verification exploration).</li></ul></div></div>
+  ${EXPERIENCE.map((e) => `<div class="job"><div class="when muted">${e.when}<br>${esc(e.where)}</div><div><h3>${esc(e.role)} · ${esc(e.org)}</h3><p class="muted job-what${e.bullets.length ? ' print-hide' : ''}" style="margin-top:6px">${esc(e.what)}</p>${e.bullets.length ? `<ul>${e.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}</div></div>`).join('')}
+  <div class="job"><div class="when muted">Ongoing<br>Independent</div><div><h3>Co-founder &amp; Product Lead · X-hunt</h3><ul><li>Defined and lead the product: a privacy-first network connecting people who want to help with communities that need them; live in a pilot with a small number of communities.</li><li>Designed the consent architecture (private by default, double opt-in introductions, append-only record of sharing choices) and the AI assistant’s limits (drafts, never introduces, ranks or decides).</li><li>Lead the product build (Next.js, TypeScript, Supabase), including a migration to design tokens.</li></ul></div></div>
+  <div class="job"><div class="when muted">Ongoing<br>Independent</div><div><h3>Founder · Reveta</h3><ul><li>Venture ecosystem for trustworthy, evidence-led AI products, including Aura (evidence-led workspace) and Landmark AI (property verification exploration).</li></ul></div></div>
 
   <h2>Skills</h2>
   <p><strong>Design:</strong> product and interaction design, service design, information architecture, design systems, prototyping, accessibility and inclusive design.<br><strong>Research &amp; strategy:</strong> discovery, interviews and synthesis, empathy and journey mapping, systems thinking, problem framing, stakeholder alignment.<br><strong>Human–AI:</strong> automation boundaries, human-in-the-loop workflows, consent and privacy design, AI assistant behaviour.<br><strong>Technical:</strong> HTML, CSS, JavaScript and TypeScript, React and Next.js, Three.js, Supabase; Figma.</p>
 
   <h2>Education</h2>
-  <div class="job"><div class="mono muted">Postgraduate</div><div><h3>MSc Design Thinking for Sustainability · University College Dublin</h3></div></div>
-  <div class="job"><div class="mono muted">Study</div><div><h3>Economics and Public Policy · University of Limerick</h3></div></div>
-  <div class="job"><div class="mono muted">Foundation</div><div><h3>Computer Science</h3></div></div>
+  <div class="job"><div class="when muted">Postgraduate</div><div><h3>MSc Design Thinking for Sustainability · University College Dublin</h3></div></div>
+  <div class="job"><div class="when muted">Study</div><div><h3>Economics and Public Policy · University of Limerick</h3></div></div>
+  <div class="job"><div class="when muted">Foundation</div><div><h3>Computer Science</h3></div></div>
 
   <h2>Mentoring &amp; writing</h2>
   <p>ADPList Top 1% Global UX Mentor — 200+ mentees, 4.7/5 rating. Volunteer student mentor, Foróige (January–April 2025). Author of <em>Designing Life’s Tapestry</em> (2024); essays on systems thinking and design on Medium.</p>
@@ -425,12 +428,12 @@ async function copyLegacy() {
   const f = 'lab/dexterity-lab/index.html';
   let html = await readFile(join(ROOT, 'legacy', f), 'utf8');
   html = html
-    .replace(/<header class="labtop">[\s\S]*?<\/header>/, `<a class="skip-proto" href="#lab-canvas">Skip to prototype</a><header class="labtop"><a href="/lab/">← Lab</a><div class="labtitle">Dexterity Lab <span>/ procedural motion study</span></div><a href="/lab/dexterity-lab/case-study/">Read the write-up →</a></header>`)
+    .replace(/<header class="labtop">[\s\S]*?<\/header>/, `<a class="skip-proto" href="#lab-canvas">Skip to prototype</a><header class="labtop"><a href="/lab/">${icon('arrow-left')} Lab</a><div class="labtitle">Dexterity Lab <span>/ procedural motion study</span></div><a href="/lab/dexterity-lab/case-study/">Read the study ${icon('arrow-right')}</a></header>`)
     .replace(/<title>[^<]*<\/title>/, '<title>Dexterity Lab — procedural motion study — Melvin Jayson Ogbalu</title>')
     .replace(/content="K3 Embody Dexterity Lab:/, 'content="Dexterity Lab:')
     .replaceAll('/notebook/dexterity-lab/', '/lab/dexterity-lab/').replaceAll('href="/notebook/"', 'href="/lab/"')
     .replace('Return to the Design Engineering Lab ↗', 'Return to the Lab')
-    .replace('</head>', `<link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>@font-face{font-family:"Geist";src:url("/fonts/geist-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}body{font-family:"Geist",system-ui,sans-serif}.labtop a{font-size:14px;color:#e9ebe8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.labtop a:hover{text-decoration:underline}.labtitle{letter-spacing:.02em;font-weight:600}aside .eyebrow{color:#a9baaf!important}.skip-proto{position:absolute;left:8px;top:-60px;background:#fff;color:#000;padding:8px 12px;z-index:9}.skip-proto:focus{top:8px}main *{min-width:0}.webgl-fallback{position:absolute;inset:auto 22px 72px 22px;max-width:46ch;padding:14px 16px;border:1px solid #526254;border-radius:10px;background:#111b15;color:#d7e2d9;font-size:14px;line-height:1.55}button,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{transition:transform 160ms cubic-bezier(.23,1,.32,1),background-color 150ms ease,border-color 150ms ease}button:active{transform:scale(.97)}:focus-visible{outline:2px solid #bceca0;outline-offset:2px}.stageinfo h1,.stageinfo p{text-shadow:0 1px 12px #080b0a,0 0 2px #080b0a}@media(max-width:600px){.labtitle span{display:none}.labtop{padding:0 12px;gap:8px}.labtop a{font-size:13px}.stageinfo h1{font-size:30px}.stageinfo p{max-width:24ch}.transport{gap:6px}.transport button,.transport select{min-height:44px}}@media(prefers-reduced-motion:reduce){button{transition:none}button:active{transform:none}}@media(max-width:900px){.stage{order:0}.playbar{order:1!important}.panel{order:2}}</style></head>`);
+    .replace('</head>', `<link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>@font-face{font-family:"Geist";src:url("/fonts/geist-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}body{font-family:"Geist",system-ui,sans-serif}.labtop a{font-size:14px;color:#e9ebe8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.labtop a:hover{text-decoration:underline}.labtitle{letter-spacing:.02em;font-weight:600}aside .eyebrow{color:#a9baaf!important}.skip-proto{position:absolute;left:8px;top:-60px;background:#fff;color:#000;padding:8px 12px;z-index:9}.skip-proto:focus{top:8px}main *{min-width:0}.labtop a{gap:6px}.transport button{display:inline-flex;align-items:center;gap:6px}.webgl-fallback{position:absolute;inset:auto 22px 72px 22px;max-width:46ch;padding:14px 16px;border:1px solid #526254;border-radius:10px;background:#111b15;color:#d7e2d9;font-size:14px;line-height:1.55}button,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{transition:transform 160ms cubic-bezier(.23,1,.32,1),background-color 150ms ease,border-color 150ms ease}button:active{transform:scale(.97)}:focus-visible{outline:2px solid #bceca0;outline-offset:2px}.stageinfo h1,.stageinfo p{text-shadow:0 1px 12px #080b0a,0 0 2px #080b0a}@media(max-width:600px){.labtitle span{display:none}.labtop{padding:0 12px;gap:8px}.labtop a{font-size:13px}.stageinfo h1{font-size:30px}.stageinfo p{max-width:24ch}.transport{gap:6px}.transport button,.transport select{min-height:44px}}@media(prefers-reduced-motion:reduce){button{transition:none}button:active{transform:none}}@media(max-width:900px){.stage{order:0}.playbar{order:1!important}.panel{order:2}}</style></head>`);
   await mkdir(dirname(join(OUT, f)), { recursive: true });
   await writeFile(join(OUT, f), html);
 }

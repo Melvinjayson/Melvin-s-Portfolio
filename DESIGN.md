@@ -54,11 +54,20 @@ The order is: cover → lede and facts → in short → first chapter → **pull
 - **Diagrams** are labelled as drawn for the portfolio.
 - **The Dexterity cover** (`src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp}`, social preview `dexterity-og.jpg`) is an AI-generated concept image. Wherever it appears — homepage Lab band, Lab page, study page and social preview — it carries the caption "AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype." The interactive Three.js prototype stays a separate experience at `/lab/dexterity-lab/`.
 - **Photography** (About: Innovation Academy, UCD; the book in a drawer on Home, About and Writing) is served as AVIF/WebP at two widths through the `pic()` helper.
-- **Organisations row:** names are set in type. A logo is used only when its SVG is supplied at `src/static/img/clients/<slug>.svg`, shown in greyscale, and only with permission for that organisation.
+- **Organisations:** grouped by relationship — *Employers* (Accenture Song, Fidelity Bank), *Client engagements through Accenture Song* (YouTube, ViiV Healthcare, Mater Private, AICPA & CIMA, Kerry Group) and *Ventures* (X-hunt, Reveta). Names are set in Geist 540. An official logo replaces a name only when its SVG is supplied at `src/static/img/clients/<slug>.svg` with permission. Logos are shown in greyscale (inverted in dark), at a 24px base height tuned per mark with `--logo-h`. Excluded: proposal-only work (Department of Justice RFP, defence proposal), engagements not documented in the repository (Electric Ireland, ESB) until confirmed, and favicons or AI-made marks of any kind.
 
 ### 1.6 The Lab
 
 The Lab is an independent practice where design, research and engineering meet. It has a fixed dark, cinematic surface in both themes. Experiments are numbered, and future directions are listed as "areas of interest". They are never presented as projects.
+
+### 1.7 Icons, components and the footer
+
+- **Icons:** Lucide only (`src/icons.mjs`, ISC licence in `src/LICENSE-lucide.txt`), drawn through `icon(name, size)`. Every icon uses stroke 1.75, round caps and joins, `currentColor` and `aria-hidden`. Sizes are 16px inline with text and 20px for controls; the large "next case" arrow is 40px at stroke 1.25. The set in use: arrow-right (internal links), arrow-up-right (external links), arrow-left (back), sun/moon (theme), play/pause (prototype), download and mail (résumé). The hamburger is two animated lines, not an icon. No emoji or Unicode arrows are used as interface icons.
+- **Buttons:** two variants, `.btn` (filled ink) and `.btn--ghost` (outlined), both pill-shaped and 48px tall. The press state is `scale(.97)`. A trailing icon nudges 3px on hover on pointer devices only.
+- **Links:** an underline offset of .22em. Arrow links use `.arrow-link`.
+- **Dividers:** a single 1px `--line` rule, used to separate groups, never as boxes around content.
+- **Image treatment:** 12–16px radius. Product renders sit on a project-tone mat. Photography is never framed with a border.
+- **Footer:** a closing invitation and four quiet link columns, then the name set as a full-width signature ("Melvin Jayson *Ogbalu*", scaled to the container width), then a one-line colophon.
 
 ## 2. Motion principles
 

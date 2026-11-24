@@ -16,5 +16,6 @@ Production stays untouched until every item that blocks release is ticked and Me
 | 10 | Final review and explicit approval to merge PR #1 | Melvin | Open |
 
 **Content needing permission before publication**
-- Client logos: names are set in type now. SVGs go in `src/static/img/clients/<slug>.svg` only once use is permitted.
+- Client logos: names are set in type, grouped as employers, client engagements and ventures. Official SVGs go in `src/static/img/clients/<slug>.svg` only once use is permitted.
+- Electric Ireland and ESB: not documented in the repository, so not shown. Confirm the engagement and whether it can be named.
 - Innovation Academy photo: confirm the other people pictured are happy to appear.

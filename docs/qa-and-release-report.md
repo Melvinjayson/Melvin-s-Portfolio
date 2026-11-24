@@ -2,6 +2,21 @@
 
 Branch `feat/senior-product-design-portfolio` · updated 2026-11-24 (final audit) · Preview: `melvin-portfolio-preview` (separate Vercel project; the existing production site is untouched).
 
+## Final visual pass (24 Nov 2026, evening)
+
+Lucide icons are now used everywhere, organisations are grouped by relationship, the footer ends with a signature, Aura sits on a product stage, the short cases have their own covers, and the résumé shows identity first.
+
+- Build: pass.
+- axe: 0 violations (21 pages + prototype × light/dark × 390/1440).
+- Overflow: 0 at every width from 320 to 2560 px in both themes.
+- Broken links: 0.
+- Prototype controls: pass, with no console errors.
+- Motion and reduced motion: pass.
+- Keyboard: pass.
+- No-JavaScript: content visible.
+- Lighthouse (mobile, local): performance 100/97/100/100/100/99/100, in order, for Home, X-hunt, Fidelity, About, Lab, Writing and Résumé. Accessibility and SEO 100 on all. Best practices 100 everywhere except About (96, because the portrait is blocked in the sandbox).
+- Résumé PDF: regenerated, A4, 2 pages.
+
 ## Final audit checks (24 Nov 2026, commit after `e230780`)
 
 Run against the latest source, which includes the creative redesign, the removal of the visual-language experiment and the new photography. A static server on localhost was used; Lighthouse simulates mobile throttling against uncompressed files.
