@@ -7,7 +7,7 @@ Source: `src/static/css/site.css` (single stylesheet, minified at build). Last u
 1. **Editorial, not dashboard.** Swiss-influenced hierarchy: rules (1px lines) and whitespace do the structuring; cards are used sparingly (Lab and Writing tiles only).
 2. **One accent, used as a mark.** Soft lime `#C7EC8B` is a fill — dots, highlights, the current-page underline, human-gate blocks in diagrams. It is never used for text on light backgrounds (contrast too low). Accessible accent text uses `--accent-ink`.
 3. **Evidence is part of the interface.** Every outcome in a case study carries an evidence badge (`.ev--observed | codebase | reported | concept | none`). Cards on the homepage and Work index use a factual status line instead, so the first screen reads as facts rather than hedges.
-4. **Works without JavaScript or motion.** JS is progressive enhancement (theme, mobile menu, icon lab, form). Reduced-motion users keep opacity fades but lose all movement — see DESIGN.md §5.
+4. **Works without JavaScript or motion.** JS is progressive enhancement (theme, mobile menu, contact form). Reduced-motion users keep opacity fades but lose all movement — see DESIGN.md §5.
 
 ## Tokens
 

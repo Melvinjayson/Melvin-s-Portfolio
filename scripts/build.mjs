@@ -148,13 +148,18 @@ const feature = (f, i) => `<li class="feature feature--${f.art}"${tone(f)}>
 
 const compactRow = (s) => `<li><a href="/work/${s.slug}/"><span class="t">${esc(s.org)}</span><span class="d">${esc(s.title)}</span><span class="s">${esc(s.domain.split(' · ')[0])}</span>${ARROW}</a></li>`;
 
-// ---------- Dexterity cover ----------
-// Drop a supplied concept image at src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp} and it replaces the render.
-const hasConcept = existsSync(new URL('../src/static/img/lab/dexterity-concept-1440.webp', import.meta.url));
-export const DEX = hasConcept
-  ? { base: '/img/lab/dexterity-concept', w: 1440, h: 810, alt: 'Concept visualisation of a robotic arm and hand reaching toward a stack of blocks.', label: 'AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype.' }
-  : { base: '/img/lab/dexterity-render', w: 1440, h: 810, alt: 'A simplified robot wrist and gripper beside a wooden block tower, rendered in soft light on a dark ground.', label: 'Rendered from the interactive Three.js prototype.' };
-export const dexCover = (eager = false, sizes = '100vw') => `<picture><source type="image/avif" srcset="${DEX.base}-800.avif 800w, ${DEX.base}-1440.avif 1440w" sizes="${sizes}"><img src="${DEX.base}-1440.webp" srcset="${DEX.base}-800.webp 800w, ${DEX.base}-1440.webp 1440w" sizes="${sizes}" width="${DEX.w}" height="${DEX.h}" alt="${esc(DEX.alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async"></picture>`;
+// ---------- Responsive images ----------
+export const pic = (base, w, h, alt, widths, sizes = '100vw', eager = false) => `<picture><source type="image/avif" srcset="${widths.map((x) => `${base}-${x}.avif ${x}w`).join(', ')}" sizes="${sizes}"><img src="${base}-${widths[widths.length - 1]}.webp" srcset="${widths.map((x) => `${base}-${x}.webp ${x}w`).join(', ')}" sizes="${sizes}" width="${w}" height="${h}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></picture>`;
+export const DEX = { base: '/img/lab/dexterity-concept', w: 1440, h: 810, alt: 'Concept image of a white robotic arm whose five-fingered hand lifts a small wooden block above a cluster of blocks.', label: 'AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype.' };
+export const dexCover = (eager = false, sizes = '100vw') => pic(DEX.base, DEX.w, DEX.h, DEX.alt, [800, 1440], sizes, eager);
+
+// Organisations, set in type. A supplied SVG at src/static/img/clients/<slug>.svg replaces the name.
+const ORGS = [
+  ['accenture-song', 'Accenture Song'], ['fidelity-bank', 'Fidelity Bank'], ['youtube', 'YouTube'], ['viiv-healthcare', 'ViiV Healthcare'],
+  ['mater-private', 'Mater Private'], ['aicpa-cima', 'AICPA & CIMA'], ['kerry-group', 'Kerry Group']
+];
+const orgMark = ([slug, name]) => existsSync(new URL(`../src/static/img/clients/${slug}.svg`, import.meta.url))
+  ? `<li><img src="/img/clients/${slug}.svg" alt="${esc(name)}" height="28" loading="lazy"></li>` : `<li>${esc(name)}</li>`;
 
 // ---------- pages ----------
 const personLd = {
@@ -177,6 +182,12 @@ function home() {
     <p class="lead">For banks, health organisations, public services and machine-learning teams, I find the human problem underneath the brief — then shape the product, the service and the decisions around it.</p>
     <div class="btn-row"><a class="btn" href="#work">Selected work ${ARROW}</a><a class="btn btn--ghost" href="/about/">About me</a></div>
   </div>
+</section>
+
+<section class="orgs wrap" aria-labelledby="orgs-title">
+  <h2 id="orgs-title" class="orgs-title">Organisations I have designed for</h2>
+  <ul class="org-list">${ORGS.map(orgMark).join('')}</ul>
+  <p class="orgs-note">Client work through Accenture Song. Names describe engagements, not endorsements.</p>
 </section>
 
 <section class="work-features" id="work" aria-labelledby="work-title">
@@ -419,7 +430,7 @@ async function copyLegacy() {
     .replace(/content="K3 Embody Dexterity Lab:/, 'content="Dexterity Lab:')
     .replaceAll('/notebook/dexterity-lab/', '/lab/dexterity-lab/').replaceAll('href="/notebook/"', 'href="/lab/"')
     .replace('Return to the Design Engineering Lab ↗', 'Return to the Lab')
-    .replace('</head>', `<link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>@font-face{font-family:"Geist";src:url("/fonts/geist-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}body{font-family:"Geist",system-ui,sans-serif}.labtop a{font-size:14px;color:#e9ebe8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.labtop a:hover{text-decoration:underline}.labtitle{letter-spacing:.02em;font-weight:600}aside .eyebrow{color:#a9baaf!important}.skip-proto{position:absolute;left:8px;top:-60px;background:#fff;color:#000;padding:8px 12px;z-index:9}.skip-proto:focus{top:8px}main *{min-width:0}.webgl-fallback{position:absolute;inset:auto 22px 72px 22px;max-width:46ch;padding:14px 16px;border:1px solid #526254;border-radius:10px;background:#111b15;color:#d7e2d9;font-size:14px;line-height:1.55}button,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{transition:transform 160ms cubic-bezier(.23,1,.32,1),background-color 150ms ease,border-color 150ms ease}button:active{transform:scale(.97)}:focus-visible{outline:2px solid #bceca0;outline-offset:2px}.stageinfo h1,.stageinfo p{text-shadow:0 1px 12px #080b0a,0 0 2px #080b0a}@media(max-width:600px){.labtitle span{display:none}.labtop{padding:0 12px;gap:8px}.labtop a{font-size:13px}.stageinfo h1{font-size:30px}.stageinfo p{max-width:24ch}.transport{gap:6px}.transport button,.transport select{min-height:44px}}@media(prefers-reduced-motion:reduce){button{transition:none}button:active{transform:none}}</style></head>`);
+    .replace('</head>', `<link rel="icon" href="/favicon.svg" type="image/svg+xml"><style>@font-face{font-family:"Geist";src:url("/fonts/geist-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}body{font-family:"Geist",system-ui,sans-serif}.labtop a{font-size:14px;color:#e9ebe8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.labtop a:hover{text-decoration:underline}.labtitle{letter-spacing:.02em;font-weight:600}aside .eyebrow{color:#a9baaf!important}.skip-proto{position:absolute;left:8px;top:-60px;background:#fff;color:#000;padding:8px 12px;z-index:9}.skip-proto:focus{top:8px}main *{min-width:0}.webgl-fallback{position:absolute;inset:auto 22px 72px 22px;max-width:46ch;padding:14px 16px;border:1px solid #526254;border-radius:10px;background:#111b15;color:#d7e2d9;font-size:14px;line-height:1.55}button,select{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{transition:transform 160ms cubic-bezier(.23,1,.32,1),background-color 150ms ease,border-color 150ms ease}button:active{transform:scale(.97)}:focus-visible{outline:2px solid #bceca0;outline-offset:2px}.stageinfo h1,.stageinfo p{text-shadow:0 1px 12px #080b0a,0 0 2px #080b0a}@media(max-width:600px){.labtitle span{display:none}.labtop{padding:0 12px;gap:8px}.labtop a{font-size:13px}.stageinfo h1{font-size:30px}.stageinfo p{max-width:24ch}.transport{gap:6px}.transport button,.transport select{min-height:44px}}@media(prefers-reduced-motion:reduce){button{transition:none}button:active{transform:none}}@media(max-width:900px){.stage{order:0}.playbar{order:1!important}.panel{order:2}}</style></head>`);
   await mkdir(dirname(join(OUT, f)), { recursive: true });
   await writeFile(join(OUT, f), html);
 }
@@ -437,7 +448,7 @@ async function main() {
   for (const [i, f] of FLAGSHIPS.entries()) await add(`/work/${f.slug}/`, flagship(f, i));
   for (const s of SUPPORTING) await add(`/work/${s.slug}/`, supporting(s));
   await add('/resume/', resume());
-  for (const p of extraPages({ page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, INDEPENDENT, FLAGSHIPS, EXPERIENCE, DEX, dexCover })) await add(p.path, p.html);
+  for (const p of extraPages({ page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, INDEPENDENT, FLAGSHIPS, EXPERIENCE, DEX, dexCover, pic })) await add(p.path, p.html);
 
   // Minify the stylesheet (comments + whitespace) — no dependency needed.
   const cssPath = join(OUT, 'css/site.css');

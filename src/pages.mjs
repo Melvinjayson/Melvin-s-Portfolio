@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 // Secondary pages. Helpers are injected by scripts/build.mjs to avoid a circular import.
 export function pages(h) {
-  const { page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, FLAGSHIPS, DEX, dexCover } = h;
+  const { page, esc, ev, ARROW, EXT, extLink, SITE, VENTURES, WRITING, FLAGSHIPS, DEX, dexCover, pic } = h;
   const out = [];
   const add = (path, opts) => out.push({ path, html: page({ path, ...opts }) });
 
@@ -26,7 +26,7 @@ export function pages(h) {
     <li><span class="when">2018 — 2021</span><div><h3>Learning what survives implementation</h3><p>At Rivet Software and Inlaks I designed payment workflows and a learning platform, and saw how design decisions live or die once engineering begins.</p></div></li>
     <li><span class="when">2021 — 2022</span><div><h3>Leading design at a bank</h3><p>At Fidelity Bank I led the design and engineering team redesigning retail and corporate banking. Trust stopped being an abstraction: people need to know where their money is, what happens when they confirm, and how to recover.</p></div></li>
     <li><span class="when">2022 — now</span><div><h3>Consulting where the brief is still unclear</h3><p>At Accenture Song I work across machine-learning operations, healthcare, public services, energy and finance. The lesson that keeps returning: <em>a polished interface cannot rescue a poorly understood problem.</em></p></div></li>
-    <li><span class="when">Alongside</span><div><h3>Building my own</h3><p>I co-founded X-hunt and lead the Reveta ecosystem, including Aura. There is no client to hide behind — every decision is mine to defend.</p></div></li>
+    <li><span class="when">Alongside</span><div><h3>Building my own</h3><p>I co-founded X-hunt and lead the Reveta ecosystem, including Aura — deciding what is worth making, shaping it end to end and testing whether people need it.</p></div></li>
   </ol>
 </section>
 
@@ -45,12 +45,13 @@ export function pages(h) {
   <div class="giving-grid">
     <div><span class="big">200+</span><h3>Mentees on ADPList</h3><p>Top 1% global UX mentor, with a 4.7/5 rating (as recorded in my 2026 CV). Portfolio reviews, career questions and the messy middle of design work — helping people build their own judgement.</p></div>
     <div><span class="big serif">2025</span><h3>Foróige student mentor</h3><p>Volunteering from January to April, supporting young people to build confidence and a sense of possibility long before anyone has a job title.</p></div>
-    <div><span class="big serif">2024</span><h3><em>Designing Life’s Tapestry</em></h3><p>A book about faith, connection and wellness — the invisible heroes of everyday life. I also write essays on systems, design and intelligent technology. <a href="/writing/">Writing</a>.</p></div>
+    <div><figure class="giving-img">${pic('/img/writing/designing-lifes-tapestry', 1280, 853, 'The book Designing Life’s Tapestry lying in an open desk drawer.', [640, 1280], '(min-width: 900px) 30vw, 100vw')}</figure><span class="big serif">2024</span><h3><em>Designing Life’s Tapestry</em></h3><p>A book about faith, connection and wellness — the invisible heroes of everyday life. I also write essays on systems, design and intelligent technology. <a href="/writing/">Writing</a>.</p></div>
   </div>
 </section>
 
 <section class="study wrap" aria-labelledby="study-title">
   <h2 id="study-title" class="section-title">Study</h2>
+  <figure class="study-photo">${pic('/img/about/innovation-academy', 1536, 1152, 'A group of eight people smiling in a university workshop room, with a 3D printer and a white humanoid robot.', [800, 1536], '(min-width: 1320px) 1320px, 100vw')}<figcaption>Innovation Academy, University College Dublin.</figcaption></figure>
   <p class="lead">Computer Science. An MSc in Design Thinking for Sustainability at University College Dublin, including the <a href="/impact/">Soiléir impact-rating research</a>. Economics and Public Policy at the University of Limerick.</p>
   <div class="btn-row mt-6"><a class="btn" href="/resume/">Résumé ${ARROW}</a><a class="btn btn--ghost" href="${SITE.linkedin}" rel="noopener">LinkedIn ${EXT}</a></div>
 </section>`
@@ -81,13 +82,14 @@ export function pages(h) {
 
 <section class="section" aria-labelledby="aura-title">
   <div class="wrap">
-    <div class="section-head"><div><p class="kicker">From my own products</p><h2 id="aura-title">Judgement, made <span class="serif">visible.</span></h2></div><p>Design questions from X-hunt and Aura that sit between interface and system.</p></div>
+    <div class="section-head"><div><p class="kicker">From my own products</p><h2 id="aura-title">Judgement, made <span class="serif">visible.</span></h2></div><p>How should an assistant show when its answer deserves a second look? A question from Aura, a workspace I am building.</p></div>
     <div class="aura-study">
       <figure class="shot"><div class="shot-frame shot-frame--dark"><img src="/img/aura/composer.webp" width="1640" height="320" alt="Aura’s message composer: a text box reading “Ask Aura anything…”, a Quick / Deliberate mode switch, Talk and microphone buttons, and a footer line: “Aura works inside your workspace. Nothing leaves it yet. Model status unverified.”" loading="lazy" decoding="async"></div><figcaption>Aura’s composer, captured from a local development build. In development; not a launched product.</figcaption></figure>
       <div class="aura-notes">
-        <h3>Aura: judgement made visible</h3>
-        <p>The composer offers two modes. <strong>Deliberate</strong> is also switched on automatically when sources look unreliable — invalid or future dates, duplicates, unsafe URL forms — and the reply must then name its limitations and a verification step. The footer says what is true today: nothing leaves the workspace, and the model’s status is unverified.</p>
-        <p>The pilot is written to be falsified: at least a 25% cut in median handling time across three tasks, at least 90% of material claims backed by an original source, and every external message kept as a draft. Any cross-workspace exposure stops it.</p>
+        <h3>Aura: knowing when an answer deserves a second look</h3>
+        <p>People working with an AI assistant need to know when to trust a reply and when to check it. Aura’s composer offers two ways to ask — <strong>Quick</strong> and <strong>Deliberate</strong> — and moves to Deliberate on its own when the sources look unreliable. The reply then says what it could not confirm and how to check it.</p>
+        <p>The footer tells people what is true today, in plain words: nothing leaves their workspace, and the model is unverified.</p>
+        <details class="disclosure mt-5"><summary>How the pilot will be judged</summary><div><p>Three repeatable tasks, compared with doing them by hand. Success means at least a 25% cut in median handling time, at least 90% of material claims backed by an original source, and every external message kept as a draft. Any cross-workspace exposure stops the pilot.</p></div></details>
       </div>
     </div>
 
@@ -119,17 +121,20 @@ export function pages(h) {
   <h1>Thinking <span class="serif">out loud.</span></h1>
   <p class="lead">Writing about systems, design, faith, human connection and how we work with intelligent technology.</p>
 </section>
+<section class="book-feature wrap" aria-labelledby="book-title">
+  <figure class="book-img">${pic('/img/writing/designing-lifes-tapestry', 1280, 853, 'The book Designing Life’s Tapestry lying in an open desk drawer.', [640, 1280], '(min-width: 900px) 60vw, 100vw', true)}</figure>
+  <div class="book-copy"><p class="kicker">Published book · 2024</p><h2 id="book-title">Designing Life’s <span class="serif">Tapestry</span></h2><p>Journey of Faith, Connection, and Wellness — tales of the invisible heroes of everyday life. A reflective exploration of resilience, belonging and the relationships that shape how we live.</p><div class="btn-row mt-6">${extLink('https://amzn.eu/d/045p1OYC', 'Find it on Amazon', 'btn')}</div></div>
+</section>
 <section class="section section--flush" aria-labelledby="books-title"><div class="wrap">
-  <h2 id="books-title" class="visually-hidden">Books and research</h2>
+  <h2 id="books-title" class="section-title">In progress</h2>
   <div class="tiles">
-    <a class="tile" href="https://amzn.eu/d/045p1OYC" rel="noopener"><p class="eyebrow eyebrow--plain">Published book · 2024</p><h3>Designing Life’s Tapestry</h3><p>Journey of Faith, Connection, and Wellness — tales of the invisible heroes of everyday life. A reflective exploration of resilience, belonging and the relationships that shape how we live.</p><span class="foot"><span class="small">Amazon</span>${EXT}</span></a>
     <div class="tile"><p class="eyebrow eyebrow--plain">Manuscript in development</p><h3>The Handoff</h3><p>What should we delegate to AI, what should remain human, and how should those transitions be designed?</p><span class="foot"><span class="small">In progress</span></span></div>
     <a class="tile" href="/impact/"><p class="eyebrow eyebrow--plain">Research</p><h3>Soiléir impact rating</h3><p>Postgraduate research on making sustainability impact understandable without collapsing it into a misleading single number.</p><span class="foot"><span class="small">UCD</span>${ARROW}</span></a>
   </div>
 </div></section>
 <section class="section"><div class="wrap">
   <div class="section-head"><div><p class="eyebrow">Essays</p><h2>On Medium.</h2></div><p><a class="arrow-link" href="${SITE.medium}" rel="noopener">All essays ${EXT}</a></p></div>
-  <ul class="compact">${WRITING.map((w) => `<li><a href="${esc(w.href)}" rel="noopener"><span class="t">${esc(w.title)}</span><span class="d">${esc(w.desc)}</span><span class="s mono">${esc(w.kind)}</span>${EXT}</a></li>`).join('')}</ul>
+  <ul class="compact">${WRITING.map((w) => `<li><a href="${esc(w.href)}" rel="noopener"><span class="t">${esc(w.title)}</span><span class="d">${esc(w.desc)}</span><span class="s">${esc(w.kind)}</span>${EXT}</a></li>`).join('')}</ul>
 </div></section>`
   });
 
@@ -140,8 +145,8 @@ export function pages(h) {
     body: `
 <section class="hero wrap">
   <p class="eyebrow">Ventures</p>
-  <h1>No brief to <span class="serif">hide behind.</span></h1>
-  <p class="lead">Building my own products means deciding what is worth building, writing the requirements, making trade-offs and testing whether anyone needs the result. These are works in progress, labelled by status — not finished success stories.</p>
+  <h1>Products of <span class="serif">my own.</span></h1>
+  <p class="lead">Building my own products means deciding what is worth building, writing the requirements, making trade-offs and testing whether anyone needs the result. Each is a work in progress, shown with where it stands today.</p>
 </section>
 <section class="section section--flush"><div class="wrap">
   <ul class="compact">${VENTURES.map((v) => `<li>${v.href ? `<a href="${esc(v.href)}"${v.href.startsWith('http') ? ' rel="noopener"' : ''}>` : '<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(120px,.6fr) 24px;gap:24px;padding:24px 0">'}<span class="t">${esc(v.name)}<span class="small" style="display:block;font-weight:400">${esc(v.kind)}</span></span><span class="d">${esc(v.body)}</span><span class="s">${esc(v.status)}</span>${v.href ? (v.href.startsWith('http') ? EXT : ARROW) + '</a>' : '<span></span></div>'}</li>`).join('')}</ul>

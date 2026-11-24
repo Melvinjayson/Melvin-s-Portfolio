@@ -59,7 +59,7 @@ export const FLAGSHIPS = [
       { src: '/img/x-hunt/moderator-tools', w: 1152, h: 502, alt: 'A moderator view listing three members with their skills and causes, under the line “Shared with moderators · each view is recorded in the audit log”.', caption: 'Moderator tools show only what members chose to share with moderators, and say that each view is logged.' },
       { src: '/img/x-hunt/ledger', w: 984, h: 402, alt: 'A list headed “Your choices, recorded”, marked append-only, with four dated entries such as “Sharing setting · skills → my communities” and “Invitation · no”.', caption: 'An append-only record of a person’s own sharing choices — the trust model as something they can inspect.' }
     ],
-    galleryNote: 'Illustrations from xhunt.app’s public landing page, rendered from the product’s own interface components and theme tokens. People, communities and content are fictional. Shown in the current theme.',
+    galleryNote: 'Illustrations from xhunt.app’s public landing page, rendered from the product’s own interface components. People, communities and content are fictional. Shown in the current theme.',
     org: 'X-hunt',
     title: 'Designing an AI-assisted network where people stay in control',
     card: 'Co-founded and lead product on a live, privacy-first platform connecting people who want to help with communities that need them. The assistant drafts; people decide.',
@@ -256,7 +256,7 @@ export const FLAGSHIPS = [
       }
     ],
     outcomes: [
-      ['Project maturity', 'Experience concept and proposed workflow', 'concept'],
+      ['Stage', 'Experience concept and proposed workflow', 'concept'],
       ['Clinical or turnaround impact', 'None claimed; would require evaluation with expert reviewers and frontline users', 'none']
     ],
     reflection: 'Good automation preserves meaning. The design problem is not only speed or presentation — it is keeping context intact across the handoff from specialist to the person who must act on it.',
@@ -310,7 +310,7 @@ export const FLAGSHIPS = [
       }
     ],
     outcomes: [
-      ['Project maturity', 'Experience direction and operational-layer groundwork', 'concept'],
+      ['Stage', 'Experience direction and operational-layer groundwork', 'concept'],
       ['Deployment or adoption', 'None claimed', 'none']
     ],
     reflection: 'The first request is not always the real design problem. Enterprise interfaces often show the visible symptom of a larger workflow challenge.',

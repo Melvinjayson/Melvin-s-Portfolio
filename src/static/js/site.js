@@ -50,57 +50,6 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav?.classList.contains('is-open')) { closeMenu(); menu.focus(); } });
   nav?.addEventListener('click', (e) => { if (e.target.closest('a')) closeMenu(); });
 
-  // Icon grammar lab
-  const lab = document.querySelector('[data-icon-lab]');
-  if (lab) {
-    const shapes = {
-      inference: '<path d="M4 12h5l3-6 3 12 3-6h3"/><circle cx="4" cy="12" r="1"/><circle cx="21" cy="12" r="1"/>',
-      confidence: '<path d="M12 3 21 8v8l-9 5-9-5V8z"/><path d="m8 12 3 3 5-6"/>',
-      latency: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 3"/>',
-      handoff: '<path d="M3 8h10m-4-4 4 4-4 4"/><path d="M21 16H11m4-4-4 4 4 4"/>',
-      verification: '<path d="m4 13 5 5L20 6"/><path d="M5 5h6"/>'
-    };
-    const notes = {
-      inference: 'Transformation from one signal to another. Not a claim of correctness.',
-      confidence: 'A supported judgement, deliberately not a tick of certainty.',
-      latency: 'A waiting period the person should be able to see and plan around.',
-      handoff: 'A change in who is responsible — human to system or back.',
-      verification: 'A reviewable checkpoint where a person confirms the output.'
-    };
-    const stage = lab.querySelector('[data-stage]');
-    const name = lab.querySelector('[data-name]');
-    const note = lab.querySelector('[data-note]');
-    const size = lab.querySelector('[data-size]');
-    const stroke = lab.querySelector('[data-stroke]');
-    const sizeOut = lab.querySelector('[data-size-out]');
-    const strokeOut = lab.querySelector('[data-stroke-out]');
-    let current = 'inference';
-    const render = () => {
-      stage.innerHTML = '<svg viewBox="0 0 24 24" role="img" aria-label="' + current + ' icon concept">' + shapes[current] + '</svg>';
-      stage.style.setProperty('--icon-size', size.value + 'px');
-      stage.style.setProperty('--icon-stroke', (Number(stroke.value) / (Number(size.value) / 24)).toFixed(3));
-      name.textContent = current[0].toUpperCase() + current.slice(1);
-      note.textContent = notes[current];
-      sizeOut.textContent = size.value + ' px';
-      strokeOut.textContent = stroke.value + ' px';
-    };
-    lab.querySelectorAll('[data-symbol]').forEach((b) => b.addEventListener('click', () => {
-      if (current === b.dataset.symbol) return;
-      current = b.dataset.symbol;
-      lab.querySelectorAll('[data-symbol]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      render();
-      // Blur crossfade on deliberate switches only — never on slider input, which fires per frame.
-      stage.firstChild?.animate(reduce.matches ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, filter: 'blur(3px)', transform: 'scale(.97)' }, { opacity: 1, filter: 'blur(0)', transform: 'none' }], { duration: 180, easing: 'cubic-bezier(.23,1,.32,1)' });
-    }));
-    size.addEventListener('input', render);
-    stroke.addEventListener('input', render);
-    lab.querySelector('[data-copy]')?.addEventListener('click', async (e) => {
-      try { await navigator.clipboard.writeText(stage.querySelector('svg').outerHTML); e.target.textContent = 'SVG copied'; }
-      catch { e.target.textContent = 'Copy unavailable in this browser'; }
-    });
-    render();
-  }
-
   // Contact form — posts JSON to /api/contact; plain email fallback always shown.
   const form = document.querySelector('[data-contact-form]');
   if (form) {

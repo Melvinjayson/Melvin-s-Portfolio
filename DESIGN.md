@@ -49,7 +49,12 @@ The order is: cover → lede and facts → in short → first chapter → **pull
 
 ### 1.5 Imagery integrity
 
-Never fabricate client screens, research findings or outcomes. Real product imagery is captioned with how it was made. Diagrams are labelled as drawn for the portfolio. The Dexterity cover shows the label "Rendered from the interactive Three.js prototype". When an AI-generated concept image is supplied (`src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp}`), the build swaps it in automatically with the label "AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype." The interactive prototype always stays a separate experience.
+- **Never fabricate** client screens, research findings or outcomes. Generated imagery is never used to stand in for missing client work.
+- **Real product imagery** is captioned with how it was made.
+- **Diagrams** are labelled as drawn for the portfolio.
+- **The Dexterity cover** (`src/static/img/lab/dexterity-concept-{800,1440}.{avif,webp}`, social preview `dexterity-og.jpg`) is an AI-generated concept image. Wherever it appears — homepage Lab band, Lab page, study page and social preview — it carries the caption "AI-generated concept visualisation — not a photograph of a physical robot or a screenshot of the prototype." The interactive Three.js prototype stays a separate experience at `/lab/dexterity-lab/`.
+- **Photography** (About: Innovation Academy, UCD; the book in a drawer on Home, About and Writing) is served as AVIF/WebP at two widths through the `pic()` helper.
+- **Organisations row:** names are set in type. A logo is used only when its SVG is supplied at `src/static/img/clients/<slug>.svg`, shown in greyscale, and only with permission for that organisation.
 
 ### 1.6 The Lab
 
@@ -62,7 +67,7 @@ Motion communicates **hierarchy** (what came first), **continuity** (where you c
 | Question | Rule |
 |---|---|
 | Should it animate at all? | Only if it is seen rarely or explains a change of state. Things used many times a session (nav links, filters, sliders) do not animate. Keyboard-triggered actions never animate. |
-| What may move? | `transform` and `opacity` only (plus `filter` for one 180ms crossfade). Never `transition: all`; never layout properties. |
+| What may move? | `transform` and `opacity` only. Never `transition: all`; never layout properties. |
 | How fast? | UI motion stays under 300ms. Exits are faster than entrances. The one exception is the hero entrance (520ms), which runs once per session. |
 | Which curve? | Ease-out for things entering or leaving. Ease-in-out for things moving on screen. Plain `ease` for colour and border changes. **Never ease-in**: it makes the interface feel slow to respond. |
 | Where does it start? | From a nearby state, never from nothing. Nothing scales from 0; the smallest start scale is 0.97. |
@@ -91,7 +96,7 @@ Motion communicates **hierarchy** (what came first), **continuity** (where you c
 /* Durations */
 --dur-press: 160ms;  /* :active scale */
 --dur-hover: 150ms;  /* colour, border, underline */
---dur-micro: 180ms;  /* icon swap, arrow nudge, icon-lab crossfade */
+--dur-micro: 180ms;  /* icon swap, arrow nudge */
 --dur-ui:    220ms;  /* menu, disclosure, theme crossfade (enter) */
 --dur-exit:  150ms;  /* every exit */
 --dur-page:  240ms;  /* cross-document page transition */
@@ -114,7 +119,6 @@ The spring curves were generated from the closed-form spring response (criticall
 | **Page transition** | Same-origin navigations crossfade: old page out in 150ms, new page in over 240ms. The header stays fixed rather than fading. | `@view-transition { navigation: auto }` |
 | **Title morph** | A project title on the homepage or Work index morphs into the case-study heading. | Matching `view-transition-name: case-<slug>` on the row `h3` and case `h1`; each name is used once per page |
 | **Hero entrance** | The headline settles 8px with no fade, so it paints on the first frame and LCP is not delayed. Eyebrow, lead, buttons and index card rise 10px and fade in behind it, staggered by ~55ms. Runs **once per browser session**, homepage only. | Head script adds `.intro` if `sessionStorage['mj-intro']` is unset; JS removes the class after 1.2s |
-| **Icon lab switch** | Selecting a new symbol crossfades it in with a 3px blur over 180ms. Size and stroke sliders update instantly: they fire per frame. | Web Animations API on the stage SVG |
 | **Dexterity orbit** | Drag to orbit. Releasing hands velocity to momentum with exponential friction (`k = 0.004^dt`); vertical orbit rubber-bands past its limits (35% resistance). A pause of more than 80ms before release cancels momentum. The render loop stops when the canvas is off-screen or the tab is hidden. | `legacy/assets/dexterity.js` |
 
 ## 5. Accessibility and preference handling
