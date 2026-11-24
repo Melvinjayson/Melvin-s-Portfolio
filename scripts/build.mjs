@@ -33,7 +33,7 @@ function head({ title, description, path, type = 'website', jsonld = [], noindex
 <html lang="en-IE" class="no-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${esc(full)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${esc(url)}">
@@ -53,7 +53,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/site.css?v=${BUILT}">
-<script>(function(){try{var t=localStorage.getItem('mj-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){document.documentElement.dataset.theme='light'}})()</script>
+<script>(function(){try{var t=localStorage.getItem('mj-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(document.querySelector&&location.pathname==='/'&&!sessionStorage.getItem('mj-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');sessionStorage.setItem('mj-intro','1')}}catch(e){document.documentElement.dataset.theme='light'}})()</script>
 ${ld}
 </head>`;
 }
@@ -115,16 +115,20 @@ export const evidenceLegend = () => `<div class="ev-legend" role="note" aria-lab
 </div>`;
 
 // ---------- reusable blocks ----------
-const projectRow = (f, i) => `<li class="project reveal">
+// Theme-aware image pair: the hidden one is display:none, so it is neither fetched (lazy) nor announced.
+export const themed = (src, w, h, alt, eager = false) => ['light', 'dark'].map((t) => `<img class="th th--${t}" src="${src}-${t}.webp" width="${w}" height="${h}" alt="${esc(alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`).join('');
+const vt = (slug) => `style="view-transition-name:case-${slug}"`;
+const projectRow = (f, i) => `<li class="project">
   <a href="/work/${f.slug}/">
     <span class="kicker-num">${String(i + 1).padStart(2, '0')}</span>
     <div>
-      <h3>${esc(f.title)}</h3>
+      <p class="status">${esc(f.status)}</p>
+      <h3 ${vt(f.slug)}>${esc(f.title)}</h3>
       <div class="meta"><span>${esc(f.org)}</span><span>${esc(f.capability)}</span><span>${esc(f.domain)}</span></div>
       <p>${esc(f.card)}</p>
-      <div class="readmore">${ev(f.maturity)} <span class="arrow-link" style="margin-left:12px">Read case study ${ARROW}</span></div>
+      <div class="readmore"><span class="arrow-link">Read case study ${ARROW}</span></div>
     </div>
-    <div class="figure-frame" aria-hidden="true">${diagrams[f.slug].replace(/role="img" aria-labelledby="[^"]*"/, 'aria-hidden="true"').replace(/ id="[^"]*"/g, '')}</div>
+    <div class="figure-frame${f.thumb ? ' figure-frame--ui' : ''}" aria-hidden="true">${f.thumb ? `<div>${themed(f.thumb.src, f.thumb.w, f.thumb.h, '', i === 0)}</div>` : diagrams[f.slug].replace(/role="img" aria-labelledby="[^"]*"/, 'aria-hidden="true"').replace(/ id="[^"]*"/g, '')}</div>
   </a>
 </li>`;
 
@@ -171,10 +175,9 @@ function home() {
   <div class="wrap">
     <div class="section-head">
       <div><p class="eyebrow">Selected work</p><h2 id="work-title">Four problems, <span class="serif">four kinds</span> of ownership.</h2></div>
-      <p>Product leadership in banking, a live product I co-founded, human–AI workflow design in healthcare, and problem framing in machine-learning operations. Each case states my role, the work’s maturity and how its outcomes are known.</p>
+      <p>A live product I co-founded and build, product leadership in banking, human–AI workflow design in healthcare, and problem framing in machine-learning operations. Each case says what I owned, what shipped and how its outcomes are known.</p>
     </div>
     <ol class="projects">${FLAGSHIPS.map(projectRow).join('')}</ol>
-    ${evidenceLegend()}
   </div>
 </section>
 
@@ -190,7 +193,7 @@ function home() {
         ['02', 'Design the service, not only the screen.', 'Customers feel the tools staff use, the contact-centre loop and the clarity of the next step. I map both sides of the line of interaction.', [['Fidelity Bank', '/work/fidelity-bank/'], ['Mater Private', '/work/mater-private/']]],
         ['03', 'Keep people in authority over automation.', 'I decide what an AI system may do — and, as importantly, what it may not: draft but never decide, assist but never replace expert sign-off.', [['X-hunt', '/work/x-hunt/'], ['ViiV Healthcare', '/work/viiv-healthcare/'], ['Autonomy proposal', '/work/autonomy-proposal/']]],
         ['04', 'Build to learn, and say what is unproven.', 'I prototype in code to test whether an interaction explains what it needs to, and I label concepts as concepts.', [['X-hunt', '/work/x-hunt/'], ['The Lab', '/lab/']]]
-      ].map(([n, h, p, links]) => `<article class="principle reveal"><span class="kicker-num">${n}</span><h3>${h}</h3><p>${p}</p><div class="proof">${links.map(([t, u]) => `<a class="arrow-link" href="${u}">${t} ${ARROW}</a>`).join('')}</div></article>`).join('')}
+      ].map(([n, h, p, links]) => `<article class="principle"><span class="kicker-num">${n}</span><h3>${h}</h3><p>${p}</p><div class="proof">${links.map(([t, u]) => `<a class="arrow-link" href="${u}">${t} ${ARROW}</a>`).join('')}</div></article>`).join('')}
     </div>
   </div>
 </section>
@@ -223,9 +226,9 @@ function home() {
       <p>Different ways of pursuing the same question: how design and technology can help people do things that matter.</p>
     </div>
     <div class="tiles">
-      <a class="tile reveal" href="/lab/"><p class="eyebrow eyebrow--plain">Design engineering</p><h3>The Lab</h3><p>An icon grammar for invisible AI processes, a Three.js motion study, and how I think about the handoff from strategy to implementation.</p><span class="foot"><span class="small">Interactive</span>${ARROW}</span></a>
-      <a class="tile reveal" href="/ventures/"><p class="eyebrow eyebrow--plain">Ventures</p><h3>Reveta, X-hunt, Aura</h3><p>Products I am building myself — where there is no brief to hide behind and every decision is mine to defend.</p><span class="foot"><span class="small">Live pilot · in development</span>${ARROW}</span></a>
-      <a class="tile reveal" href="/writing/"><p class="eyebrow eyebrow--plain">Writing &amp; mentoring</p><h3>Ideas in public</h3><p>Essays on systems thinking and design, a published book, and mentoring designers through ADPList.</p><span class="foot"><span class="small">Medium · book</span>${ARROW}</span></a>
+      <a class="tile" href="/lab/"><p class="eyebrow eyebrow--plain">Design engineering</p><h3>The Lab</h3><p>An icon grammar for invisible AI processes, a Three.js motion study, and how I think about the handoff from strategy to implementation.</p><span class="foot"><span class="small">Interactive</span>${ARROW}</span></a>
+      <a class="tile" href="/ventures/"><p class="eyebrow eyebrow--plain">Ventures</p><h3>Reveta, X-hunt, Aura</h3><p>Products I am building myself — where there is no brief to hide behind and every decision is mine to defend.</p><span class="foot"><span class="small">Live pilot · in development</span>${ARROW}</span></a>
+      <a class="tile" href="/writing/"><p class="eyebrow eyebrow--plain">Writing &amp; mentoring</p><h3>Ideas in public</h3><p>Essays on systems thinking and design, a published book, and mentoring designers through ADPList.</p><span class="foot"><span class="small">Medium · book</span>${ARROW}</span></a>
     </div>
   </div>
 </section>`
@@ -268,7 +271,8 @@ function flagship(f, i) {
 <header class="case-hero wrap">
   <p class="breadcrumb"><a href="/work/">Work</a> / ${esc(f.org)}</p>
   <p class="eyebrow">${esc(f.org)} · ${esc(f.domain)}</p>
-  <h1>${esc(f.title)}</h1>
+  <p class="status">${esc(f.status)}</p>
+  <h1 ${vt(f.slug)}>${esc(f.title)}</h1>
   <p class="lead">${esc(f.lede)}</p>
   <dl class="summary">${f.summary.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
   <div class="tldr">${f.tldr.map(([k, v]) => `<div><h2>${esc(k)}</h2><p>${esc(v)}</p></div>`).join('')}</div>
@@ -276,6 +280,10 @@ function flagship(f, i) {
 </header>
 
 <div class="wrap">
+  ${f.gallery ? `<section class="gallery" aria-labelledby="ui-${f.slug}">
+    <header class="gallery-head"><p class="eyebrow">The product</p><h2 id="ui-${f.slug}">What a person actually sees.</h2><p class="small">${esc(f.galleryNote)}</p></header>
+    <div class="gallery-grid">${f.gallery.map((g, k) => `<figure class="shot shot--${[5, 7, 12, 7, 5][k] || 12}"><div class="shot-frame">${themed(g.src, g.w, g.h, g.alt)}</div><figcaption>${esc(g.caption)}</figcaption></figure>`).join('')}</div>
+  </section>` : ''}
   <figure class="case-figure">
     <div class="frame" tabindex="0" role="region" aria-label="Diagram — scroll horizontally on small screens">${fig}</div>
     <figcaption><span class="ev ev--none">Explanatory diagram</span> Drawn for this portfolio to explain the design reasoning. Not a client deliverable or a screenshot of a shipped system. <span class="scroll-hint">Scroll sideways to see all of it.</span></figcaption>
@@ -294,7 +302,7 @@ function flagship(f, i) {
 
   <section class="section" aria-labelledby="dec-${f.slug}">
     <div class="section-head"><div><p class="eyebrow">Decisions and trade-offs</p><h2 id="dec-${f.slug}">The calls that shaped it.</h2></div></div>
-    <ol class="decisions">${f.decisions.map((d, j) => `<li class="decision reveal"><span class="kicker-num">${String(j + 1).padStart(2, '0')}</span><div><h3>${esc(d.title)}</h3></div><div class="rationale"><p>${esc(d.why)}</p><dl class="mt-5"><dt>Instead of</dt><dd>${esc(d.alt)}</dd><dt>Trade-off</dt><dd>${esc(d.tradeoff)}</dd></dl></div></li>`).join('')}</ol>
+    <ol class="decisions">${f.decisions.map((d, j) => `<li class="decision"><span class="kicker-num">${String(j + 1).padStart(2, '0')}</span><div><h3>${esc(d.title)}</h3></div><div class="rationale"><p>${esc(d.why)}</p><dl class="mt-5"><dt>Instead of</dt><dd>${esc(d.alt)}</dd><dt>Trade-off</dt><dd>${esc(d.tradeoff)}</dd></dl></div></li>`).join('')}</ol>
   </section>
 
   <section class="section" aria-labelledby="out-${f.slug}">

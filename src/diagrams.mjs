@@ -4,7 +4,7 @@
 // Colours come from CSS classes in site.css so diagrams follow the theme.
 
 const arrow = (x1, y1, x2, y2, cls = 'stroke') =>
-  `<path class="${cls} draw" style="--len:${Math.ceil(Math.hypot(x2 - x1, y2 - y1)) + 20}" d="M${x1} ${y1}L${x2} ${y2}" stroke-width="1.4"/>` +
+  `<path class="${cls}" d="M${x1} ${y1}L${x2} ${y2}" stroke-width="1.4"/>` +
   `<path class="${cls}" d="M${x2 - 7} ${y2 - 5}L${x2} ${y2}L${x2 - 7} ${y2 + 5}" stroke-width="1.4" ${x2 < x1 ? `transform="rotate(180 ${x2} ${y2})"` : ''}/>`;
 
 const box = (x, y, w, h, title, sub, strong = false) =>
@@ -31,7 +31,7 @@ export const diagrams = {
     label(40, 252, 'Organisation layer') +
     [['Contact centre', 'feedback, disputes'], ['Internal tools', 'case & ops views'], ['Delivery teams', 'engineering, product'], ['Leadership', 'priorities, trade-offs']]
       .map(([t, s], i) => box(40 + i * 186, 270, 164, 66, t, s)).join('') +
-    [0, 1, 2, 3].map((i) => `<path class="stroke2 draw" style="--len:140" d="M${122 + i * 186} 136 V270" stroke-width="1.2" stroke-dasharray="2 4"/>`).join('') +
+    [0, 1, 2, 3].map((i) => `<path class="stroke2" d="M${122 + i * 186} 136 V270" stroke-width="1.2" stroke-dasharray="2 4"/>`).join('') +
     `<rect class="surface" x="40" y="372" width="720" height="98" rx="6"/>` +
     `<text class="ttl ink" x="60" y="404">Principle</text>` +
     `<text class="ink2" x="60" y="430">People need to know where their money is, what happens when they confirm,</text>` +
@@ -64,7 +64,7 @@ export const diagrams = {
     box(390, 90, 170, 78, 'AI-assisted drafts', 'translate, restructure', true) +
     `<rect class="acc" x="590" y="90" width="170" height="78" rx="6"/><text class="on-acc" x="604" y="116" font-weight="560">Expert sign-off</text><text class="on-acc" x="604" y="136" font-size="12">Human gate 2</text><text class="on-acc" x="604" y="154" font-size="12">meaning preserved?</text>` +
     arrow(180, 129, 206, 129) + arrow(360, 129, 386, 129) + arrow(560, 129, 586, 129) +
-    `<path class="stroke2 draw" style="--len:300" d="M675 168 V214 H475 V172" stroke-width="1.2" stroke-dasharray="3 4"/>` + label(488, 206, 'Revise') +
+    `<path class="stroke2" d="M675 168 V214 H475 V172" stroke-width="1.2" stroke-dasharray="3 4"/>` + label(488, 206, 'Revise') +
     label(40, 270, 'Formats for frontline use') +
     [['Playbooks', 'structured, reusable'], ['Languages', 'local translation'], ['Talking avatars', 'spoken explainers'], ['Briefs', 'short updates']]
       .map(([t, s], i) => box(40 + i * 186, 290, 164, 66, t, s)).join('') +
@@ -85,7 +85,7 @@ export const diagrams = {
     [['Models', 470, 92], ['Releases', 700, 92], ['Updates', 470, 250], ['Docs', 712, 250], ['Teams', 590, 312]]
       .map(([t, x, y]) => `<rect class="box-strong" x="${x - 46}" y="${y - 18}" width="92" height="34" rx="17"/><text class="ink" x="${x}" y="${y + 4}" text-anchor="middle" font-size="12.5">${t}</text>`).join('') +
     [[516, 104, 552, 136], [654, 104, 628, 136], [516, 238, 552, 204], [666, 238, 628, 204], [590, 294, 590, 220]]
-      .map(([a, b, c, d]) => `<path class="stroke draw" style="--len:80" d="M${a} ${b}L${c} ${d}" stroke-width="1.2"/>`).join('') +
+      .map(([a, b, c, d]) => `<path class="stroke" d="M${a} ${b}L${c} ${d}" stroke-width="1.2"/>`).join('') +
     `<text class="ink3" x="420" y="372">Which model am I working with? What changed?</text>` +
     `<text class="ink3" x="420" y="392">How is it performing? Where is the knowledge?</text>` +
     `<rect class="surface" x="40" y="420" width="720" height="50" rx="6"/>` +

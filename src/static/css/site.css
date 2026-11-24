@@ -48,7 +48,21 @@
   --max:1320px;
   --gutter:clamp(20px,4vw,48px);
   --radius:6px;
-  --ease:cubic-bezier(.2,.7,.2,1);
+  /* motion — see DESIGN.md §Motion. Enter/exit: ease-out. On-screen movement: ease-in-out. Hover/colour: ease. Never ease-in. */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+  --ease:var(--ease-out);
+  --spring:linear(0,.094,.274,.455,.608,.726,.812,.873,.916,.944,.964,.976,.985,.99,.994,.996,.997,.998,1); /* critically damped, bounce 0 */
+  --spring-bouncy:linear(0,.069,.216,.385,.544,.678,.783,.862,.918,.955,.979,.993,1.001,1.005,1.006,1.006,1.005,1.004,1.003,1.002,1.002,1.001,1.001,1,1); /* bounce .15 — reserved for drag release */
+  --dur-press:160ms;   /* :active scale */
+  --dur-hover:150ms;   /* colour, border, underline */
+  --dur-micro:180ms;   /* icon swap, nudge */
+  --dur-ui:220ms;      /* menus, popovers, disclosures (enter) */
+  --dur-exit:150ms;    /* every exit is faster than its enter */
+  --dur-page:240ms;    /* cross-document view transition */
+  --dur-intro:520ms;   /* hero entrance, once per session */
+  --stagger:55ms;
 }
 html[data-theme="dark"]{
   color-scheme:dark;
@@ -70,6 +84,8 @@ html[data-theme="dark"]{
 
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
+:root{interpolate-size:allow-keywords}
+a,button,summary,select,label,[role=button]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:96px}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--step-0)/1.6 var(--font-sans);font-feature-settings:"ss01" 1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
@@ -94,7 +110,7 @@ dl,dd{margin:0}
 button{font:inherit;color:inherit}
 
 /* ---------- Layout ---------- */
-.wrap{width:min(var(--max),100% - 2*var(--gutter));margin-inline:auto}
+.wrap{width:min(var(--max),100% - 2*max(var(--gutter),env(safe-area-inset-left),env(safe-area-inset-right)));margin-inline:auto}
 .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--s-5)}
 .section{padding-block:var(--section);border-top:1px solid var(--line)}
 .section--flush{border-top:0}
@@ -123,19 +139,23 @@ button{font:inherit;color:inherit}
 .nav a:not(.nav-cta)[aria-current="page"]::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:2px;background:var(--accent)}
 .nav .nav-cta{color:var(--ink);border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px}
 .nav .nav-cta:hover{border-color:var(--ink)}
-.theme-toggle{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;color:var(--ink-2)}
+.theme-toggle{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;color:var(--ink-2);transition:transform var(--dur-press) var(--ease-out),color var(--dur-hover) ease,border-color var(--dur-hover) ease}
+.theme-toggle:active,.menu-toggle:active{transform:scale(.94)}
 .theme-toggle:hover{color:var(--ink);border-color:var(--line-strong)}
 .theme-toggle svg{width:18px;height:18px}
 .theme-toggle .i-sun{display:none}
 html[data-theme="dark"] .theme-toggle .i-sun{display:block}
 html[data-theme="dark"] .theme-toggle .i-moon{display:none}
-.menu-toggle{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:999px;background:transparent;cursor:pointer}
-.menu-toggle span{display:block;width:16px;height:1.5px;background:var(--ink);margin:4px auto;transition:transform .2s var(--ease)}
+.menu-toggle{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:999px;background:transparent;cursor:pointer;transition:transform var(--dur-press) var(--ease-out)}
+.menu-toggle span{display:block;width:16px;height:1.5px;background:var(--ink);margin:4px auto;transition:transform var(--dur-ui) var(--ease-in-out)}
 .header-tools{display:flex;align-items:center;gap:var(--s-2)}
 @media (max-width:860px){
   .menu-toggle{display:inline-block}
-  .nav{position:fixed;inset:68px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:var(--s-3) var(--gutter) var(--s-6);display:none}
-  .nav.is-open{display:flex}
+  .nav{position:fixed;inset:68px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:var(--s-3) var(--gutter) calc(var(--s-6) + env(safe-area-inset-bottom));display:none;opacity:0;transform:translateY(-6px);transform-origin:top center;transition:opacity var(--dur-exit) ease-out,transform var(--dur-exit) var(--ease-out),display var(--dur-exit) allow-discrete,overlay var(--dur-exit) allow-discrete;max-height:calc(100dvh - 68px);overflow-y:auto;overscroll-behavior:contain}
+  .nav.is-open{display:flex;opacity:1;transform:none;transition-duration:var(--dur-ui)}
+  @starting-style{.nav.is-open{opacity:0;transform:translateY(-6px)}}
+  .nav.is-open a{animation:nav-item var(--dur-ui) var(--ease-out) both}
+  .nav.is-open a:nth-child(2){animation-delay:30ms}.nav.is-open a:nth-child(3){animation-delay:60ms}.nav.is-open a:nth-child(4){animation-delay:85ms}.nav.is-open a:nth-child(5){animation-delay:105ms}.nav.is-open a:nth-child(6){animation-delay:120ms}
   .nav a{font-size:1.35rem;padding:var(--s-4) 0;border-bottom:1px solid var(--line);color:var(--ink)}
   .nav a[aria-current="page"]::after{display:none}
   .nav .nav-cta{border:0;border-radius:0;padding:var(--s-4) 0;border-bottom:1px solid var(--line)}
@@ -154,14 +174,14 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .kicker-num{font:500 .82rem/1 var(--font-mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
 
 /* ---------- Buttons & links ---------- */
-.btn{display:inline-flex;align-items:center;gap:var(--s-3);min-height:48px;padding:0 var(--s-5);border-radius:999px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:540;font-size:.96rem;border:1px solid var(--ink);transition:transform .2s var(--ease),background .2s var(--ease)}
-.btn:hover{transform:translateY(-1px)}
+.btn{display:inline-flex;align-items:center;gap:var(--s-3);min-height:48px;padding:0 var(--s-5);border-radius:999px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:540;font-size:.96rem;border:1px solid var(--ink);transition:transform var(--dur-press) var(--ease-out),background-color var(--dur-hover) ease,border-color var(--dur-hover) ease,color var(--dur-hover) ease}
+.btn:active{transform:scale(.97)}
 .btn--ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
 .btn--ghost:hover{border-color:var(--ink)}
-.btn svg,.arrow-link svg{width:16px;height:16px;flex:none;transition:transform .2s var(--ease)}
-.btn:hover svg,.arrow-link:hover svg{transform:translateX(3px)}
+.btn svg,.arrow-link svg{width:16px;height:16px;flex:none;transition:transform var(--dur-micro) var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.btn:hover svg,.arrow-link:hover svg{transform:translateX(3px)}}
 .btn-row{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center}
-.arrow-link{display:inline-flex;align-items:center;gap:var(--s-2);font-weight:540;text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+.arrow-link{display:inline-flex;align-items:center;gap:var(--s-2);font-weight:540;text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:border-color var(--dur-hover) ease}
 .arrow-link:hover{border-color:var(--ink)}
 
 /* ---------- Hero ---------- */
@@ -193,7 +213,10 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .project h3{font-size:var(--step-3);letter-spacing:-.035em;line-height:1.04;max-width:18ch}
 .project .meta{margin-top:var(--s-4);display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);color:var(--ink-3);font:500 .8rem/1.5 var(--font-mono);text-transform:uppercase;letter-spacing:.03em}
 .project p{margin-top:var(--s-4);color:var(--ink-2);max-width:52ch}
-.project .figure-frame{aspect-ratio:16/10;border:1px solid var(--line);background:var(--bg-raised);border-radius:var(--radius);overflow:hidden;display:grid;place-items:center;transition:border-color .25s var(--ease)}
+.project .figure-frame{aspect-ratio:16/10;border:1px solid var(--line);background:var(--bg-raised);border-radius:var(--radius);overflow:hidden;display:grid;place-items:center;transition:border-color var(--dur-hover) ease}
+.project .figure-frame>*{transition:transform 320ms var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.project a:hover .figure-frame>*{transform:scale(1.015)}}
+.project a:active .figure-frame>*{transform:scale(.99);transition-duration:var(--dur-press)}
 .project .figure-frame svg{width:100%;height:100%}
 .project a:hover .figure-frame{border-color:var(--line-strong)}
 .project a:hover h3{text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:var(--accent);text-underline-offset:.14em}
@@ -219,6 +242,39 @@ html[data-theme="dark"] .theme-toggle .i-moon{display:none}
 .ev--reported{color:var(--status-reported)}
 .ev--concept{color:var(--status-concept)}
 .ev--none{color:var(--ink-3)}
+.ev--codebase{color:var(--ink-2);border-style:dashed}
+/* Factual status line — replaces a badge on cards: what, when, my role. */
+.status{font:500 .78rem/1.5 var(--font-mono);letter-spacing:.03em;text-transform:uppercase;color:var(--ink-3);margin:0 0 var(--s-3);display:flex;align-items:center;gap:var(--s-2)}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+.project:first-child .status::before,.case-hero .status::before{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.case-hero .status{margin-bottom:var(--s-4)}
+
+/* ---------- Product imagery ---------- */
+.th{display:block;width:100%;height:auto}
+.th--dark{display:none}
+html[data-theme="dark"] .th--light{display:none}
+html[data-theme="dark"] .th--dark{display:block}
+.figure-frame--ui{background:var(--surface)!important;padding:6%}
+.figure-frame--ui>div{width:100%;border-radius:10px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 18px 40px -24px color-mix(in srgb,var(--ink) 40%,transparent)}
+.gallery{padding-block:var(--s-7) var(--s-5)}
+.gallery-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--s-5);align-items:end;margin-bottom:var(--s-6)}
+.gallery-head .eyebrow,.gallery-head h2{grid-column:1/span 7}
+.gallery-head h2{font-size:var(--step-3)}
+.gallery-head p.small{grid-column:9/-1;grid-row:2;margin:0}
+.gallery-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s-6) var(--s-5);align-items:start}
+.shot{margin:0;grid-column:span 12}
+.shot--5{grid-column:span 5}.shot--7{grid-column:span 7}
+.shot-frame{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:clamp(12px,2.2vw,28px);overflow:hidden}
+.shot-frame img{border-radius:8px;width:100%;height:auto}.shot-frame img:not(.th){display:block}
+.shot-frame--dark{background:#0b0d17;border-color:#1e2130}
+.shot--12 .shot-frame{padding:clamp(16px,4vw,56px)}
+.shot--12 .shot-frame img{max-width:760px;margin-inline:auto}
+.shot figcaption{margin-top:var(--s-3);color:var(--ink-2);font-size:var(--step--1);line-height:1.55;max-width:60ch}
+@media (max-width:899px){.shot--5,.shot--7{grid-column:span 12}.shot-frame,.shot--12 .shot-frame{padding:8px;border-radius:10px}.gallery-head>*{grid-column:1/-1!important;grid-row:auto!important}.gallery-head p.small{margin-top:var(--s-3)}}
+.aura-study{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--s-6) clamp(24px,4vw,64px);align-items:start;border-top:1px solid var(--line);padding-top:var(--s-7)}
+.aura-notes h3{font-size:var(--step-2);letter-spacing:-.02em}
+.aura-notes p{color:var(--ink-2);margin-top:var(--s-4)}
+@media (max-width:899px){.aura-study{grid-template-columns:minmax(0,1fr)}}
 .ev-legend{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-5);align-items:center;padding:var(--s-4) 0;border-block:1px solid var(--line);margin-top:var(--s-6)}
 .ev-legend span.desc{color:var(--ink-3);font-size:.9rem}
 
@@ -404,14 +460,56 @@ details.disclosure>div{padding-bottom:var(--s-5);color:var(--ink-2)}
 @media (max-width:760px){.footer-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* ---------- Motion ---------- */
-@media (prefers-reduced-motion:no-preference){
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-  .reveal.is-in{opacity:1;transform:none}
-  .dg .draw{stroke-dasharray:var(--len,600);stroke-dashoffset:var(--len,600);transition:stroke-dashoffset 1.4s var(--ease) .15s}
-  .is-in .dg .draw,.dg.is-in .draw{stroke-dashoffset:0}
+/* ---------- Motion system (DESIGN.md §Motion) ----------
+   No scroll reveals, no decorative loops, no parallax. Motion is reserved for
+   feedback (press), state change (menu, disclosure, theme) and continuity
+   (page transitions, title morph). Everything below is enhancement. */
+@keyframes nav-item{from{opacity:0;transform:translateY(-4px)}}
+@keyframes intro-rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes intro-settle{from{transform:translateY(8px)}} /* headline: no fade, so it paints (and counts as LCP) on the first frame */
+@keyframes fade-in{from{opacity:0}}
+@keyframes blur-in{from{opacity:0;filter:blur(3px);transform:scale(.97)}}
+
+/* Hero entrance — once per browser session, set by the head script. */
+.intro .hero h1,.intro .hero .lead,.intro .hero .btn-row,.intro .hero .index-card,.intro .hero .eyebrow{animation:intro-rise var(--dur-intro) var(--ease-out) both}
+.intro .hero .eyebrow{animation-delay:0ms}
+.intro .hero h1{animation-name:intro-settle;animation-delay:0ms}
+.intro .hero .lead{animation-delay:calc(var(--stagger) * 2.2)}
+.intro .hero .btn-row{animation-delay:calc(var(--stagger) * 3)}
+.intro .hero .index-card{animation-delay:calc(var(--stagger) * 3.6)}
+
+/* Disclosures — height animates via interpolate-size + ::details-content. */
+.disclosure::details-content{block-size:0;overflow:clip;opacity:0;transition:block-size var(--dur-exit) var(--ease-out),opacity var(--dur-exit) ease-out,content-visibility var(--dur-exit) allow-discrete}
+.disclosure[open]::details-content{block-size:auto;opacity:1;transition-duration:var(--dur-ui)}
+.disclosure summary::after{transition:transform var(--dur-ui) var(--ease-in-out)}
+
+/* Cross-document page transitions — a short crossfade, plus a shared title
+   morph from project row to case-study heading where names match. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:var(--dur-exit) ease-out both fade-out-vt}
+::view-transition-new(root){animation:var(--dur-page) var(--ease-out) both fade-in}
+@keyframes fade-out-vt{to{opacity:0}}
+::view-transition-group(*){animation-duration:var(--dur-page);animation-timing-function:var(--ease-in-out)}
+::view-transition-group(site-header){animation:none}
+.site-header{view-transition-name:site-header}
+/* Theme switch — same-document transition, crossfade only. */
+html.theme-instant *,html.theme-instant *::before,html.theme-instant *::after{transition:none!important}
+html.theme-vt::view-transition-old(root),html.theme-vt::view-transition-new(root){animation:var(--dur-ui) ease both fade-in;mix-blend-mode:normal}
+html.theme-vt::view-transition-old(root){animation-name:fade-out-vt}
+html.theme-vt::view-transition-group(*){animation:none}
+
+/* Reduced motion: keep opacity and colour, drop movement and morphs. */
+@media (prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}
+  .btn:active,.theme-toggle:active,.menu-toggle:active,.project a:active .figure-frame>*{transform:none}
+  .project a:hover .figure-frame>*{transform:none}
+  .intro .hero *{animation:none!important}
+  .nav{transform:none!important}.nav.is-open a{animation:fade-in var(--dur-ui) ease both}
+  @starting-style{.nav.is-open{transform:none}}
+  html{scroll-behavior:auto}
 }
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-.no-js .reveal{opacity:1;transform:none}
+@media (prefers-reduced-transparency:reduce){.site-header{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media (prefers-contrast:more){:root{--line:var(--line-strong)}.btn--ghost{border-color:var(--ink)}}
 
 /* ---------- Utilities ---------- */
 .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}

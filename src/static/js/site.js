@@ -12,11 +12,30 @@
     toggle.setAttribute('aria-pressed', String(dark));
   };
   label();
-  toggle?.addEventListener('click', () => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const syncThemeColor = () => {
+    const c = getComputedStyle(root).getPropertyValue('--bg').trim();
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => { m.content = c; m.removeAttribute('media'); });
+  };
+  if (localStorage.getItem?.('mj-theme')) syncThemeColor();
+  const applyTheme = () => {
+    // Suppress per-element colour transitions so the theme changes as one surface, not a cascade.
+    root.classList.add('theme-instant');
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-instant')));
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
     try { localStorage.setItem('mj-theme', root.dataset.theme); } catch (e) {}
-    label();
+    label(); syncThemeColor();
+  };
+  // Theme switch: a 220ms crossfade via a same-document view transition.
+  // Instant when reduced motion is requested or the API is missing.
+  toggle?.addEventListener('click', () => {
+    if (!document.startViewTransition || reduce.matches) return applyTheme();
+    root.classList.add('theme-vt');
+    const vt = document.startViewTransition(applyTheme);
+    vt.finished.finally(() => root.classList.remove('theme-vt'));
   });
+  // The hero entrance runs once per session; clear the class so it never replays mid-visit.
+  if (root.classList.contains('intro')) setTimeout(() => root.classList.remove('intro'), 1200);
 
   // Mobile navigation
   const menu = document.querySelector('[data-menu-toggle]');
@@ -30,16 +49,6 @@
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav?.classList.contains('is-open')) { closeMenu(); menu.focus(); } });
   nav?.addEventListener('click', (e) => { if (e.target.closest('a')) closeMenu(); });
-
-  // Reveal on scroll (skipped entirely under reduced motion via CSS)
-  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const io = new IntersectionObserver((entries) => {
-      for (const en of entries) if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-    document.querySelectorAll('.reveal, .dg').forEach((el) => io.observe(el));
-  } else {
-    document.querySelectorAll('.reveal, .dg').forEach((el) => el.classList.add('is-in'));
-  }
 
   // Icon grammar lab
   const lab = document.querySelector('[data-icon-lab]');
@@ -76,9 +85,12 @@
       strokeOut.textContent = stroke.value + ' px';
     };
     lab.querySelectorAll('[data-symbol]').forEach((b) => b.addEventListener('click', () => {
+      if (current === b.dataset.symbol) return;
       current = b.dataset.symbol;
       lab.querySelectorAll('[data-symbol]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       render();
+      // Blur crossfade on deliberate switches only — never on slider input, which fires per frame.
+      stage.firstChild?.animate(reduce.matches ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, filter: 'blur(3px)', transform: 'scale(.97)' }, { opacity: 1, filter: 'blur(0)', transform: 'none' }], { duration: 180, easing: 'cubic-bezier(.23,1,.32,1)' });
     }));
     size.addEventListener('input', render);
     stroke.addEventListener('input', render);

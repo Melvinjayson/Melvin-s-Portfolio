@@ -1,13 +1,13 @@
 # Design system
 
-Source: `src/static/css/site.css` (single stylesheet, minified at build). Last updated 2026-11-23.
+Source: `src/static/css/site.css` (single stylesheet, minified at build). Last updated 2026-11-24. Motion, interaction patterns and the image system are documented in [`DESIGN.md`](../DESIGN.md), which is canonical for those topics.
 
 ## Principles
 
 1. **Editorial, not dashboard.** Swiss-influenced hierarchy: rules (1px lines) and whitespace do the structuring; cards are used sparingly (Lab and Writing tiles only).
 2. **One accent, used as a mark.** Soft lime `#C7EC8B` is a fill — dots, highlights, the current-page underline, human-gate blocks in diagrams. It is never used for text on light backgrounds (contrast too low). Accessible accent text uses `--accent-ink`.
-3. **Evidence is part of the interface.** Every outcome carries an evidence badge (`.ev--observed | reported | concept | none`). This is the site's signature component and the visual expression of the positioning (trust in complex systems).
-4. **Works without JavaScript or motion.** JS is progressive enhancement (theme, mobile menu, reveal, icon lab, form). Reduced-motion users get no transitions.
+3. **Evidence is part of the interface.** Every outcome in a case study carries an evidence badge (`.ev--observed | codebase | reported | concept | none`). Cards on the homepage and Work index use a factual status line instead, so the first screen reads as facts rather than hedges.
+4. **Works without JavaScript or motion.** JS is progressive enhancement (theme, mobile menu, icon lab, form). Reduced-motion users keep opacity fades but lose all movement — see DESIGN.md §5.
 
 ## Tokens
 
@@ -66,4 +66,4 @@ Fonts: SIL Open Font License (see `src/static/fonts/LICENSE-*`).
 
 ## Motion
 
-Only two behaviours: a 14px fade-up reveal on rows, and a stroke draw on diagram connectors. Both are disabled under `prefers-reduced-motion: reduce` and when JavaScript is unavailable. No WebGL on primary pages; the Three.js prototype lives at `/lab/dexterity-lab/` and loads only there.
+No scroll reveals or decorative animation. Motion is limited to press feedback, state changes and page continuity; the full system is in DESIGN.md. No WebGL on primary pages; the Three.js prototype lives at `/lab/dexterity-lab/` and loads only there.
