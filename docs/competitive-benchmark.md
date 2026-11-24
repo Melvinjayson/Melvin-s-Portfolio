@@ -9,8 +9,8 @@ Observed 2026-11-23 (expanded 2026-11-24). Method: text and structure captured v
 | Google UX portfolio tips (services.google.com/fh/files/misc/ux_design_portfolio_tips_19.pdf) | 3–5 case studies; end-to-end process; clear user problem and solution; process artefacts (sketches, wireframes, prototypes); specific role and impact; cross-functional collaboration; understandable without the candidate presenting | 4 flagships; summary strip states role on every case; TL;DR makes each case self-explanatory. **Gap:** real process artefacts. |
 | Google Senior UX Designer postings (2026) | 6 years interaction design; interactive prototypes and journeys; communicate design rationale; AI tools or AI-powered features; technical prototyping (HTML/CSS/JS) for some teams; translating AI reasoning and multi-step workflows into trustworthy interfaces (Cloud AI) | Decisions-with-trade-offs format; Lab and X-hunt show code prototyping; ViiV and X-hunt show AI boundary design. |
 | Meta Product Designer postings | Shipping multiple broad, ambiguous end-to-end features; prototyping; representing work to executives; for senior levels, "end-to-end ownership of complex, multi-surface product experiences" (Instagram) | Fidelity (led, delivered) and X-hunt (live) carry ownership. **Gap:** shipped consumer-scale surfaces and experiment results. |
-| Microsoft (Microsoft AI, London; Principal Designer, AI Experience, UK) | Health AI principal role asks for end-to-end experiences and a portfolio link; AI Experience principal role asks for systems-level craft across interconnected components and end-to-end case studies of agentic systems (designproject.io summary, third-party) | Lead with Fidelity and X-hunt; Microsoft roles reward systems-level, multi-component evidence over isolated screens |
-| Meta London, Monitoring & Observability (Data Infrastructure) | Help engineers improve reliability through operational data; full range of product, interaction and visual skills | Direct match for the YouTube ML-ops reframing story — worth a targeted application |
+| Microsoft (Microsoft AI, London; Principal Designer, AI Experience, UK) — **both postings returned 404 on 24 Nov 2026** | Health AI principal role asks for end-to-end experiences and a portfolio link; AI Experience principal role asks for systems-level craft across interconnected components and end-to-end case studies of agentic systems (designproject.io summary, third-party) | Lead with Fidelity and X-hunt; Microsoft roles reward systems-level, multi-component evidence over isolated screens |
+| Meta London, Monitoring & Observability (Data Infrastructure) — **closed: job 2637231749810222 redirects to “position not available” (24 Nov 2026)** | Help engineers improve reliability through operational data; full range of product, interaction and visual skills | The narrative still fits other infrastructure and developer-tools roles; Meta's open generic Product Designer posting (1397212694826926) is the live route |
 | Anthropic Product Designer postings | 8+ years; complex workflows, B2B/dev tools; prototyping with front-end code; shipping in ambiguous environments; partnering with engineering and research without fixed lanes | Strong fit for the code-prototyping and human–AI narrative; years-of-experience threshold should be checked per role. |
 
 ## 2. Third-party hiring commentary (not official)
@@ -35,7 +35,13 @@ Observed 2026-11-23 (expanded 2026-11-24). Method: text and structure captured v
 | 9 | Elvin Hu *(secondary)* | — | Senior Product/UX designer at Google, generative AI in Chrome | Minimal serif layout | — | Restraint reads as senior |
 | 10 | Frances Liddell-Rodriguez | francesliddell.com | Principal/Lead product designer, design systems at Meta, Twitter and others (title differs between headline and metadata) | "What to expect from me as a design partner" section; testimonials labelled by relationship (manager, colleague, mentee); résumé in nav | Homepage cards show company and title only — no role, scope or outcome; inconsistent titles | **Labelled testimonials** are a credible add — real ADPList reviews could fill this, with permission |
 
-Ten references were reviewed (fewer than the 12–15 requested); references 7–9 are secondary descriptions. Several further searches for named senior and staff portfolios returned job boards and profiles rather than personal sites. Recommended follow-up: a 30-minute visual review of 5 more senior/staff portfolios on desktop and mobile before production release.
+| 11 | Aleksei Kipin | kipin.xyz | Staff Product Designer, Meta — "I design / I build / I lead" | First-person narrative; quantified outcomes stated with scope; independent apps built with AI coding agents shown alongside employer work | Long homepage | Building with agents is now a credible senior signal when the judgement is visible — matches how X-hunt is built |
+| 12 | Raphael Tompkins | (Meta) | Company names and project titles only | — | No role, scope, decisions or outcomes on the first screen | **Negative reference**: recognisable employers do not substitute for ownership |
+| 13 | Gavin Nelson | nelson.co | OpenAI designer, previously Linear and GitHub | Dated project list; craft-led detail pages; restraint | Little case narrative | Dates and restraint read as confidence; we added years to status lines |
+| 14 | Jakub Zegzulka | zegzulka.com | OpenAI, previously Apple | Minimal; résumé link prominent | Little public process | Minimal works when the employer brand carries; without that, process must carry |
+| 15 | Marcos Rezende | (Microsoft) | Microsoft designer | "[Confidential] Request access to view" for client work; endorsements; AI Lab; résumé link | Gated cases add friction | **Walkthrough-on-request** is a credible model for Melvin's Accenture cases — needs his confirmation |
+
+Fifteen references reviewed (7–9 from secondary descriptions; 12 and 15 observed through public profile pages rather than personal sites). Visual layouts of most were not inspected in a browser.
 
 ## 4. Patterns adopted
 
@@ -44,6 +50,9 @@ Ten references were reviewed (fewer than the 12–15 requested); references 7–
 3. **Résumé one click from anywhere** (Roberts, Barilla) → nav item + footer + PDF.
 4. **System as proof** (Ritacca, Lovin) → Lab section "The portfolio is a product too".
 5. **Text, not logos, for employers and clients** → removed favicon wall.
+6. **Real product first** (Kipin, Nelson) → X-hunt leads, with light/dark renders of its actual interface.
+7. **Factual status lines, not hedges** (Barilla, Nelson) → cards read "Live pilot · 2026 · Co-founder"; evidence badges moved inside case outcomes.
+8. **AI-assisted building as a skill, shown honestly** (Kipin) → X-hunt states that most commits are co-authored with AI agents and that the guard-rails are the design work.
 
 ## 5. Patterns deliberately not adopted
 

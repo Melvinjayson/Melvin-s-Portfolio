@@ -1,21 +1,22 @@
 # QA and release report
 
-Branch `feat/senior-product-design-portfolio` · 2026-11-23 · Preview: `melvin-portfolio-preview` (separate Vercel project; the existing production site is untouched).
+Branch `feat/senior-product-design-portfolio` · updated 2026-11-24 (phase 2) · Preview: `melvin-portfolio-preview` (separate Vercel project; the existing production site is untouched).
 
-## Executed checks
+## Executed checks (phase 2, 24 Nov 2026)
 
 | Check | Tool | Scope | Result |
 |---|---|---|---|
-| Build | `node scripts/build.mjs` | 21 pages + sitemap, robots, 404, 3 redirect stubs | Pass |
-| Accessibility (automated) | axe-core 4, tags wcag2a/aa, wcag21a/aa, wcag22aa, best-practice | 19 pages × light/dark × 390/1440px (76 runs) | **0 violations** after fixes (brand link name mismatch; heading order on Writing) |
-| Lighthouse (mobile, simulated throttling, local static server) | Lighthouse 13 | `/`, `/work/fidelity-bank/`, `/resume/` | Performance 100, Accessibility 100, Best practices 100, SEO 100 on all three. LCP 0.9–1.0 s, CLS ≤ 0.014, TBT ≤ 30 ms |
-| Horizontal overflow | Playwright, `scrollWidth` | All pages × 375/768/1920 × light/dark | Pass (legacy Dexterity write-up fixed with a scoped style) |
-| Keyboard | Playwright | Home | Skip link first; logical order through nav, theme toggle and CTAs; mobile menu opens with focus on first link and closes on Esc |
-| No-JavaScript | Playwright, JS disabled | Case study | Content visible (reveal disabled), navigation and links work |
-| Dexterity Lab | axe-core | Prototype and write-up, both themes, 390/1440px | 0 violations after fixes (task buttons now expose `aria-pressed`; contrast; focusable code block). Write-up migrated to the design system; prototype rebranded from "K3 Embody" to "Dexterity Lab" with the external reference credited |
+| Build | `node scripts/build.mjs` | 21 pages + sitemap, robots, 404, redirect stubs | Pass |
+| Accessibility (automated) | axe-core 4, wcag2a/aa, wcag21a/aa, wcag22aa, best-practice | 23 pages × light/dark × 390/1440px, plus the Dexterity prototype | **0 violations** |
+| Lighthouse (mobile, simulated throttling, local static server) | Lighthouse 13 | `/`, `/work/x-hunt/`, `/lab/` | Performance 100 / 100 / 100; Accessibility, Best practices, SEO 100. LCP 1.05–1.08 s, CLS ≤ 0.002, TBT ≤ 20 ms. The first run showed LCP 2.26 s on `/` because the hero headline faded in; the headline now settles without a fade |
+| Horizontal overflow | Playwright `scrollWidth` | All pages × 320/375/390/768/1024/1440/1920 × light/dark (322 checks) | 0 overflow (Aura image overflow at 390 found and fixed) |
+| Motion behaviour | Playwright, Chrome 153 | Hero intro, theme switch, page transition, menu, disclosure, reduced motion | Intro runs once per session and not under reduced motion; theme switch runs as a root view transition; `view-transition-name` unique on every page checked; menu animates in and closes on Esc; reduced motion: no intro, no theme animations |
+| Keyboard | Playwright | Home | Skip link first; logical order; mobile menu focus and Esc |
+| No-JavaScript | Playwright, JS disabled | Case study | Content visible; navigation works |
+| Dexterity Lab 3D | Playwright + SwiftShader WebGL | 1440, 768, 390 | WebGL context created at all three sizes; scene renders; Play works; no page errors; no overflow. Three.js is now self-hosted (no CDN) |
+| Product images | Playwright | `/work/x-hunt/` light/dark, 1440/390 | All visible images load; inactive theme variant not displayed |
 | Internal links | Static crawl of `dist/` | All HTML | 0 broken |
-| Preview deployment | Vercel | `/work/x-hunt/` 200, unknown route → custom 404, `/notebook/` → `/lab/`, `/api/contact` GET → 405 | Pass |
-| Résumé PDF | Chrome print, `pdftotext` | A4, 2 pages | Text-selectable (ATS-readable), no images |
+| Résumé PDF | Chrome print | A4, 2 pages | Unchanged this phase |
 
 ## Not executed / limitations
 
@@ -23,7 +24,8 @@ Branch `feat/senior-product-design-portfolio` · 2026-11-23 · Preview: `melvin-
 - **Field Core Web Vitals** — no field data exists for the new build. Lighthouse ran against a local, uncompressed server, not the Vercel preview (the build environment cannot reach vercel.app directly).
 - **Contact form delivery** — the preview project has no `RESEND_API_KEY`, so submissions return a 503 with the email fallback. The API now accepts the deployment's own origin via `VERCEL_URL`.
 - **Portrait image** is served from Vercel Blob and could not be loaded in the build sandbox; verify it renders on the preview.
-- The Three.js prototype loads Three.js from the jsDelivr CDN; it could not render in the build sandbox and should be checked on the preview.
+- Three.js is now self-hosted and the scene was verified with software WebGL (SwiftShader). GPU rendering on real phones has not been tested.
+- View transitions need Chrome/Edge 126+ or Safari 18.2+; Firefox navigates without them. That is the intended fallback.
 
 ## Simulated recruiter review (internal, not external feedback)
 
